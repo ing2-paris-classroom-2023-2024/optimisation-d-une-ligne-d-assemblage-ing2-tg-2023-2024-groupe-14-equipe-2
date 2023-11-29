@@ -19,10 +19,11 @@ int find_taille(FILE * file);
 //////////////////////////////////////////////////////
 ///          fonctions construction graphe         ///
 //////////////////////////////////////////////////////
-G_Exclu * Crea_G_exclu(int ordre);// créer le graphe
+G * Crea_G_exclu(int ordre,int **matrice_deg,int **matrix);// créer le graphe
 pSE* Arete_exclu(pSE* sE,int sE1,int sE2);// Ajouter l'arête entre sE1 et sE2 du Graphe
-void print_successif(pSE * sE, int num);//print des successeurs du sommet num
-void print_G_exclu(G_Exclu * graphe);//print du graphe avec les succs de chaque sE
+void print_successif(int *tab,int num,int deg);//pSE * sE, int num);//print des successeurs du sommet num
+void print_G_exclu(G * graphe);//print du graphe avec les succs de chaque sE
+void ajout_SE_dans_tabDEG(G_Exclu * pt,int s1,int s2);
 
 //////////////////////////////////////////////////////
 ///             fonctions colorisation             ///
@@ -32,6 +33,10 @@ void print_G_exclu(G_Exclu * graphe);//print du graphe avec les succs de chaque 
 //////////////////////////////////////////////////////
 ///         fonctions tris + organisation          ///
 //////////////////////////////////////////////////////
+struct deg_ex *reduction_de_matrice(int **tabint, int ordre,int taille);//reduit la taille de la matrice creer dans lect_graphe_exclu() retire les "0"
+
+
+
 
 
 

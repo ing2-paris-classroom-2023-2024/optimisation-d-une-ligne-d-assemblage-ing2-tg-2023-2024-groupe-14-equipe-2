@@ -9,14 +9,15 @@
 #include <stdlib.h>
 //structure de infos de sommet et de degree assigner
 typedef struct deg_ex{
-    int sommet;
     int deg;
+    int *tab;
 }Deg_E;
 /* Structure d'un arc*/
 struct Arc_ex
 {
     int sommet; // numéro de sommet d'un arc adjacent au sommet initial
     int valeur;
+    Deg_E s_info;
     struct Arc_ex* arc_suivant;
 };
 
@@ -27,7 +28,7 @@ typedef struct Arc_ex* pArcE;
 typedef struct Sommet_ex
 {
     struct Arc_ex* pArcE;
-    Deg_E s_info;
+    int sommet;
     int station;/// 1, 2, 3, etc.
 
 }S_Exclu;
@@ -40,8 +41,16 @@ typedef struct Graphe_exclu
 {
     int taille;
     int ordre;
+    Deg_E *tab;
     pSE *pSE;
 } G_Exclu;
+typedef struct G_exclu2{
+    int taille,
+    ordre;
+    int **mat;
+    Deg_E *tab;
+
+}G;
 
 
 
