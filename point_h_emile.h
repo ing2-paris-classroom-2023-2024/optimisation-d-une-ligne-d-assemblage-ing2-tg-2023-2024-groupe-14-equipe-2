@@ -11,8 +11,10 @@
 typedef struct {
     int sommet;
     int *predecesseur;
+    int nb_predecesseur;
     int *successeur;
-    int temps_exclusion;
+    int nb_successeur;
+    float temps_execution;
 
 }arbre;
 
