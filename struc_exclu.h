@@ -9,6 +9,8 @@
 #include <stdlib.h>
 //structure de infos de sommet et de degree assigner
 typedef struct deg_ex{
+    int sommet;
+    int station;
     int deg;
     int *tab;
 }Deg_E;
