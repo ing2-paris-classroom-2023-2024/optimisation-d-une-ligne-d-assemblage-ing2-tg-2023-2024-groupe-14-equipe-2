@@ -30,3 +30,14 @@ void ouverture_de_fichier(arbre* tab_sommet[], int nombre_de_ligne, FILE* fichie
     }
 
 }
+
+void optimisation_de_la_chaine(arbre* monArbre[], int taille, int ordre){
+
+    for (int i = 0; i < ordre; i++) {
+        printf("\nMon sommet [%d] : ", monArbre[i]->sommet);
+        for (int j = 0; j < monArbre[i]->nb_successeur; j++) {
+            printf(" [%d] ", monArbre[i]->successeur[j]);
+        }
+    }
+
+}

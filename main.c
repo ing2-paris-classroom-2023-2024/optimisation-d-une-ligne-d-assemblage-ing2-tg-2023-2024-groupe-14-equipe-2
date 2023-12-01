@@ -10,7 +10,9 @@ int main() {
     float temps;
     int sommet_1 = 0;
     int sommet_2 = 0;
-    int successeur = 0;
+    int indentation_successeur = 0;
+    int indentation_predecesseur = 0;
+
     fichier = fopen("operation.txt", "r");
     fichier_2 = fopen("precedence.txt", "r");
 
@@ -60,7 +62,7 @@ int main() {
     for (int i = 0; i < nombre_de_sommet; i++) {
         for (int j = 0; j <= nb_precedence_arbre; j++) {
             fscanf(fichier_2, "%d%d", &sommet_1, &sommet_2);
-            printf("\n [%d]  [%d]\n",monArbre[i]->sommet, sommet_1);
+            //printf("\n [%d]  [%d]\n",monArbre[i]->sommet, sommet_1);
             if(monArbre[i]->sommet == sommet_1){
                 monArbre[i]->nb_successeur++;
 
@@ -83,8 +85,7 @@ int main() {
     }
 
     rewind(fichier_2);
-    int indentation_successeur = 0;
-    int indentation_predecesseur = 0;
+
 
     for (int i = 0; i < nombre_de_sommet; i++) {
         for (int j = 0; j <= nb_precedence_arbre; j++) {
@@ -104,12 +105,14 @@ int main() {
         rewind(fichier_2);
     }
 
-    for (int i = 0; i < nombre_de_sommet; i++) {
+    /*for (int i = 0; i < nombre_de_sommet; i++) {
         printf("\nMon sommet [%d] : ", monArbre[i]->sommet);
         for (int j = 0; j < monArbre[i]->nb_successeur; j++) {
             printf(" [%d] ", monArbre[i]->successeur[j]);
         }
-    }
+    }*/
+
+    optimisation_de_la_chaine(monArbre, nb_precedence_arbre, nombre_de_sommet);
 
     return 0;
 }
