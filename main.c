@@ -3,6 +3,7 @@
 int main() {
     FILE *fichier;
     FILE *fichier_2;
+    FILE *fichier_3;
     char caractere;
     int numero_du_sommet = 0;
     int nombre_de_sommet = 1; // il y a forcement 1 sommet à la base
@@ -12,9 +13,13 @@ int main() {
     int sommet_2 = 0;
     int indentation_successeur = 0;
     int indentation_predecesseur = 0;
+    float cycle = 0;
 
-    fichier = fopen("operation.txt", "r");
-    fichier_2 = fopen("precedence.txt", "r");
+    fichier = fopen("test_operation.txt", "r");
+    fichier_2 = fopen("test_precedence.txt", "r");
+    fichier_3 =  fopen("test_cycle.txt", "r");
+
+    fscanf(fichier_3, "%f", &cycle);
 
     while ((caractere = fgetc(fichier)) != EOF) {
         if (caractere == '\n') {
@@ -105,14 +110,14 @@ int main() {
         rewind(fichier_2);
     }
 
-    /*for (int i = 0; i < nombre_de_sommet; i++) {
+   /* for (int i = 0; i < nombre_de_sommet; i++) {
         printf("\nMon sommet [%d] : ", monArbre[i]->sommet);
         for (int j = 0; j < monArbre[i]->nb_successeur; j++) {
             printf(" [%d] ", monArbre[i]->successeur[j]);
         }
     }*/
 
-    optimisation_de_la_chaine(monArbre, nb_precedence_arbre, nombre_de_sommet);
+    optimisation_de_la_chaine(monArbre, nb_precedence_arbre, nombre_de_sommet, cycle);
 
     return 0;
 }
