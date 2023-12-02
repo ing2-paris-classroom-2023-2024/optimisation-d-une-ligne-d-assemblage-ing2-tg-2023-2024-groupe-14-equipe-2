@@ -110,7 +110,7 @@ void optimisation_de_la_chaine(arbre* monArbre[], int taille, int ordre, float c
                 printf("\n\nle potentiel sommet [%d]\n", potentiel_sommet);
 
                 //on viens convertir le potentielle sommet en donné utilisable pour le mettre des les crochet d'un tableau
-                for (int j = 0; j < ordre; j++) {
+                for (int j = 0; j < ordre; j++) { // enfaite on va venir comparer le nom du sommet avec sa position dans l'arbre et on lui attribue cette position par la suite
                     if(monArbre[j]->sommet == potentiel_sommet){
                         potentiel_sommet = j;
                         break;
@@ -165,16 +165,42 @@ void optimisation_de_la_chaine(arbre* monArbre[], int taille, int ordre, float c
 
                             if(potentiel_temps_list <= cycle){
                                 push_queue_I(*monArbre[potentiel_sommet], temp_G);
-                            }
-                            else{
+                            }else{
                                 printf("pour la file avec comme boucle d indentaion [%d] on a un cycle saturer", j);
+                                print_queue_G();
                                 exit(EXIT_SUCCESS);
                             }
 
+                    }else if (collorisation()){// mais pour les autre element on va devoir creer d'autre liste tous en reprenant notre list initiale et les aujouter a notre liste generale
+                        QueueElement *temp_cc = temp_G->first; //temp_cc sera utiliser pour copier et coller la liste dans une nouvelle liste pour venir la palcer a la fin
+                        float temps_intermediaire = 0;
+                        while (temp_cc != temp){
+                            push_queue(temp_cc->value);// on push nos different element dans une list en preparation list_p
+                            temps_intermediaire = temps_intermediaire + temp_cc->value.temps_execution; // pour povoir récupéré le temps de notre list
+                            temp_cc = temp_cc->next;
+                        }
 
-                    } // mais pour les autre element on va devoir creer d'autre liste tous en reprenant notre list initiale et les aujouter a notre liste generale
+                        push_queue_G(temps_intermediaire);// et la c'est bon on a copier notre list dans la list generale
+                        // on reprend le shema pour insérer des sommet dans notre list a l'interrieur de la list generale
+                        potentiel_sommet = sommet_analyse->predecesseur[j];
+                        for (int k = 0; k < ordre; k++) {
+                            if (monArbre[k]->sommet == potentiel_sommet) {
+                                potentiel_sommet = k;
+                                break;
+                            }
+                        }
+                        potentiel_temps_list = last_G->temp_list + monArbre[potentiel_sommet]->temps_execution;
+
+                        if(potentiel_temps_list <= cycle){
+                            push_queue_I(*monArbre[potentiel_sommet], last_G);
+                        }else{
+                            printf("pour la file avec comme boucle d indentaion [%d] on a un cycle saturer", j);
+                            print_queue_G();
+                            exit(EXIT_SUCCESS);
+                        }
 
 
+                    }
                 }
             }
             else{
