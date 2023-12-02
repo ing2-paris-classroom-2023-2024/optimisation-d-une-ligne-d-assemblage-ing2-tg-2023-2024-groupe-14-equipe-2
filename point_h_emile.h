@@ -62,7 +62,7 @@ void pop_queue_G(void);
 void clear_queue_G(void);
 
 // fonction qui va nous permettre de push a l'interrieur des list dans la list generale
-void push_queue_I(arbre x, QueueElement_G *repere);
+void push_queue_I(arbre x, QueueElement_G *repere, float temp_list);
 
 void ouverture_de_fichier(arbre* tab_sommet[], int nombre_de_ligne, FILE* fichier);
 void optimisation_de_la_chaine(arbre* monArbre[], int taille, int ordre, float cycle);
