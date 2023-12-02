@@ -122,20 +122,71 @@ void optimisation_de_la_chaine(arbre* monArbre[], int taille, int ordre, float c
 
                 if(potentiel_temps_list <= cycle){
                     push_queue(*monArbre[potentiel_sommet]);
-                    push_queue_G();
+                    push_queue_G(potentiel_temps_list);
                     temps_list = potentiel_temps_list;
 
-                }else{
+                }
+                else{
                     printf("\nLe cycle a ete sature\n\n");
                     print_queue();
                     exit(EXIT_SUCCESS);
                 }
             }
         }
-
-
         print_queue_G();
-        //exit(EXIT_SUCCESS);
+
+        /// on analyse les sommet qui sommet qui sont dans list à l'interrieur de la liste generale, l'analyse de chaque chemin
+
+        QueueElement_G *temp_G = first_G;
+
+        for (int i = 0; i < nb_element_G; i++) { //boucle qui va servir a nous deplacer sur notre list general de first_G à last_G
+            if(i != 0){  //il ne faut pas sauter le premier point de la list general
+                temp_G = temp_G->next;
+            }
+            QueueElement *temp = temp_G->last; // permet d'aller chercher le derneière element de la list
+
+            *sommet_analyse = temp->value; // permet de selectionner le sommet d'analyse, qui est de type arbre, mais on a egalement a l'interreieur de queue element un type abre
+
+            if(sommet_analyse->nb_predecesseur > 0){
+                for (int j = 0; j < sommet_analyse->nb_predecesseur; j++) { // on va venir analyser tous les predecesseur du sommet_analyse
+                    if(j == 0 && collorisation()) { // le première element peut directement etre palacé dernière notre liste initialement creer
+
+                            //ici on viens en quelque sorte reproduire notre schéma un peu plus haut avec l'histoire de devoir convertir nos sommet etc...
+                            // mais on a une difference, pour cette partie on viens push directement dans la file a l'interrieur de notre files general
+                            potentiel_sommet = sommet_analyse->predecesseur[j];
+
+                            for (int k = 0; k < ordre; k++) {
+                                if(monArbre[k]->sommet == potentiel_sommet){
+                                    potentiel_sommet = k;
+                                    break;
+                                }
+                            }
+                            potentiel_temps_list = temp_G->temp_list + monArbre[potentiel_sommet]->temps_execution;
+
+                            if(potentiel_temps_list <= cycle){
+                                push_queue_I(*monArbre[potentiel_sommet], temp_G);
+                            }
+                            else{
+                                printf("pour la file avec comme boucle d indentaion [%d] on a un cycle saturer", j);
+                                exit(EXIT_SUCCESS);
+                            }
+
+
+                    } // mais pour les autre element on va devoir creer d'autre liste tous en reprenant notre list initiale et les aujouter a notre liste generale
+
+
+                }
+            }
+            else{
+                printf("\nOn a atteind le sommet initiale\n");
+                print_queue_G();
+                exit(EXIT_SUCCESS);
+            }
+
+        }
+
+
+
     }
     else{
         printf("\n Le sommet d'origine est pris comme point de depart\n");
@@ -264,7 +315,7 @@ void print_queue_G(void){
     }
 }
 
-void push_queue_G(void){
+void push_queue_G(float temp_list){
     QueueElement_G *element;
     element = malloc(sizeof(*element));
     if(is_empty_queue()){
@@ -275,15 +326,20 @@ void push_queue_G(void){
     first_p = NULL;
     element->last = last_p;
     last_p = NULL;
+
     element->next = NULL;
 
+    element->nb_element = nb_element_p;
+    nb_element_p = 0;
+
+    element->temp_list = temp_list;
 
     if(is_empty_queue_G()){
         first_G = element;
         last_G = element;
     }else{
         last_G->next = element;
-        last_G= element;
+        last_G = element;
     }
     nb_element_G++;
 } //En réaliter on n'a pas vraiment d'élément à ajouter, on relie plutot le first et le last de notre list simple a ce de la structure de la list_General
@@ -325,4 +381,19 @@ void clear_queue_G(void){
     while (!is_empty_queue_G()){
         pop_queue_G();
     }
+}
+
+
+
+void push_queue_I(arbre x, QueueElement_G *repere){ //fonction qui va nous permettre de push à l'interrieur des list de la liste générale
+    QueueElement *element;
+    element = malloc(sizeof(*element));
+
+    element->value = x;
+    element->next = NULL;
+
+    repere->last->next = element;
+    repere->last= element;
+
+    repere->nb_element++;
 }
