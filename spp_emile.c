@@ -54,26 +54,37 @@ void ouverture_de_fichier(arbre* tab_sommet[], int nombre_de_ligne, FILE* fichie
 
 void optimisation_de_la_chaine(arbre* monArbre[], int taille, int ordre, float cycle){
 
-
-    try_a_bulle(monArbre, ordre, taille);
-    for (int i = 0; i < ordre; i++) {
-        if(monArbre[i]->nb_predecesseur == 0){
-            int sommet_initiale = monArbre[i]->sommet;
-            break;
-        }
-    }
-
+    int nb_sommet_initiale = 0;
     float temps_list = 0;
     int potentiel_sommet = 0;
     float potentiel_temps_list =0;
     int nb_predecesseur = 0;
+    arbre* sommet_analyse = NULL;
 
+    try_a_bulle(monArbre, ordre, taille);
+    for (int i = 0; i < ordre; i++) {
+        if(monArbre[i]->nb_predecesseur == 0){
+            nb_sommet_initiale++;
+        }
+    }
+    printf("\n nombre de sommet initiale : [%d]", nb_sommet_initiale);
+    int sommet_initiale[nb_sommet_initiale];
+    for (int i = 0; i < nb_sommet_initiale; i++) {
+        for (int j = 0; j < ordre; j++) {
+            if(monArbre[j]->nb_predecesseur == 0){
+                sommet_initiale[i] = monArbre[j]->sommet;
+            }
+        }
+    }
+
+
+
+
+    ///affichage des informations
     printf("\nTri par nb successeur\n");
-
     for (int i = 0; i < ordre; i++) {
         printf("\n[%d] = [%f]\n", monArbre[i]->sommet, monArbre[i]->temps_execution);
     }
-
     for (int i = 0; i < ordre; i++) {
         printf("\nMon sommet [%d] : ", monArbre[i]->sommet);
         for (int j = 0; j < monArbre[i]->nb_predecesseur; j++) {
@@ -81,32 +92,39 @@ void optimisation_de_la_chaine(arbre* monArbre[], int taille, int ordre, float c
         }
     }
 
-    push_queue(*monArbre[0]);
-    nb_predecesseur = monArbre[0]->nb_predecesseur;
-    temps_list = temps_list + monArbre[0]->temps_execution;
+    sommet_analyse = monArbre[0];
 
-    if(monArbre[0]->nb_predecesseur > 0 ){
+    ///Vrai algorithme d'optimisation qui commence
+
+    nb_predecesseur = sommet_analyse->nb_predecesseur;
+    temps_list = temps_list + sommet_analyse->temps_execution;
+
+    if(sommet_analyse->nb_predecesseur > 0 ){
+        ///première phase de l'algorithme on viens créer les base de la list general pour pouvoir par la suite traiter chaque list
+
         for (int i = 0; i < nb_predecesseur; i++) {
-            if(collorisation() == true){
+            push_queue(*sommet_analyse);
+            if(collorisation()){
 
-                potentiel_sommet = monArbre[0]->predecesseur[i];
+                potentiel_sommet = sommet_analyse->predecesseur[i];
                 printf("\n\nle potentiel sommet [%d]\n", potentiel_sommet);
 
-                //on viens convertir le potentielle sommet en donner utilisable pour le mettre des les crochet d'un tableau
+                //on viens convertir le potentielle sommet en donné utilisable pour le mettre des les crochet d'un tableau
                 for (int j = 0; j < ordre; j++) {
                     if(monArbre[j]->sommet == potentiel_sommet){
                         potentiel_sommet = j;
                         break;
                     }
                 }
-                //printf("\nnv potentiel sommet [%d]\n", potentiel_sommet);
 
                 potentiel_temps_list = temps_list + monArbre[potentiel_sommet]->temps_execution;
                 printf("\nle potentiel temp de list [%f]\n", potentiel_temps_list);
 
-                if(potentiel_temps_list < cycle){
+                if(potentiel_temps_list <= cycle){
                     push_queue(*monArbre[potentiel_sommet]);
-                    //printf("\nPush queue\n\n");
+                    push_queue_G();
+                    temps_list = potentiel_temps_list;
+
                 }else{
                     printf("\nLe cycle a ete sature\n\n");
                     print_queue();
@@ -114,11 +132,10 @@ void optimisation_de_la_chaine(arbre* monArbre[], int taille, int ordre, float c
                 }
             }
         }
-        push_queue_G();
+
+
         print_queue_G();
-
-
-        exit(EXIT_SUCCESS);
+        //exit(EXIT_SUCCESS);
     }
     else{
         printf("\n Le sommet d'origine est pris comme point de depart\n");
@@ -191,7 +208,6 @@ void pop_last(){
     nb_element_p--;
 }
 
-
 void pop_queue(void){
     if(is_empty_queue()){
         printf("\nla file est vide, il n'y a rien à retirer\n");
@@ -251,7 +267,10 @@ void print_queue_G(void){
 void push_queue_G(void){
     QueueElement_G *element;
     element = malloc(sizeof(*element));
-
+    if(is_empty_queue()){
+        printf("\nFile vide, on ne peut peut pas inserer de nouvelle file dans la file generale\n");
+        return;
+    }
     element->first = first_p;
     first_p = NULL;
     element->last = last_p;
