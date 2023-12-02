@@ -12,7 +12,7 @@ void main_ex(char * filename);
 //////////////////////////////////////////////////////
 ///           fonctions lecture fichier            ///
 //////////////////////////////////////////////////////
-G_Exclu * lect_graphe_exclu( char* file);
+G * lect_graphe_exclu( char* file);
 int find_order(int *tab,int taille_tab);
 //int find_taille(FILE * file);
 
@@ -20,10 +20,8 @@ int find_order(int *tab,int taille_tab);
 ///          fonctions construction graphe         ///
 //////////////////////////////////////////////////////
 G * Crea_G_exclu(int ordre);// créer le graphe
-pSE* Arete_exclu(pSE* sE,int sE1,int sE2);// Ajouter l'arête entre sE1 et sE2 du Graphe
-void print_successif(struct deg_ex *pt);//pSE * sE, int num);//print des successeurs du sommet num
+void print_successif(struct deg_ex pt);//print des successeurs du sommet num
 void print_G_exclu(G * graphe);//print du graphe avec les succs de chaque sE
-void ajout_SE_dans_tabDEG(G_Exclu * pt,int s1,int s2);
 
 //////////////////////////////////////////////////////
 ///             fonctions colorisation             ///
@@ -33,8 +31,10 @@ void ajout_SE_dans_tabDEG(G_Exclu * pt,int s1,int s2);
 //////////////////////////////////////////////////////
 ///         fonctions tris + organisation          ///
 //////////////////////////////////////////////////////
-struct deg_ex *reduction_de_matrice(int **tabint, int ordre,int taille);//reduit la taille de la matrice creer dans lect_graphe_exclu() retire les "0"
+Deg_E *tri_sommet_par_deg(Deg_E *pt,int order);
+Deg_E *tri_sommet_croissants(Deg_E *pt,int order);
 
+int check_correspondance_station(int t1,int t2,Deg_E *pt);
 
 
 

@@ -7,6 +7,9 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+
+#define BUFFER_INFO 60
+#define BUFF_TRI 10
 //structure de infos de sommet et de degree assigner
 typedef struct deg_ex{
     int sommet;
@@ -39,13 +42,7 @@ typedef struct Sommet_ex
 typedef S_Exclu* pSE;
 
 /* Alias d'un Graphe */
-typedef struct Graphe_exclu
-{
-    int taille;
-    int ordre;
-    Deg_E *tab;
-    pSE *pSE;
-} G_Exclu;
+
 typedef struct G_exclu2{
     int taille,
     ordre;
