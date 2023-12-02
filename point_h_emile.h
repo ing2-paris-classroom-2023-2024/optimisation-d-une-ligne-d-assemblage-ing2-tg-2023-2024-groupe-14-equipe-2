@@ -29,16 +29,36 @@ typedef struct QueueElement{
     struct QueueElement *next;
 }QueueElement, *Queue;
 
-static QueueElement *first = NULL;
-static QueueElement *last = NULL;
-static int nb_element = 0;
+typedef struct QueueElement_G{
+    int valeur_du_point;
+    QueueElement *first;
+    QueueElement *last;
+    struct QueueElement_G *next;
+    int nb_element;
+}QueueElement_G, *Queue_G;
 
+static QueueElement *first_p = NULL;
+static QueueElement *last_p = NULL;
+static int nb_element_p = 0;
+
+static QueueElement_G *first_G = NULL;
+static QueueElement_G *last_G = NULL;
+static int nb_element_G = 0;
+
+//list classique
 void clear_queue(void);
 void pop_queue(void);
 void push_queue(arbre x);
 void print_queue(void);
 Bool is_empty_queue(void);
 void pop_last(void);
+
+//list general qui va comprendre les list, il saura les écouter et les motivé pour qu'il réussise dans de bonne condition sans avoir MILLE TRUC A FAIRE PTN DE MERDE
+Bool is_empty_queue_G(void);
+void print_queue_G(void);
+void push_queue_G(void);
+void pop_queue_G(void);
+void clear_queue_G(void);
 
 void ouverture_de_fichier(arbre* tab_sommet[], int nombre_de_ligne, FILE* fichier);
 void optimisation_de_la_chaine(arbre* monArbre[], int taille, int ordre, float cycle);

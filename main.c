@@ -46,9 +46,7 @@ int main() {
     }
 
     rewind(fichier);
-    for (int i = 0; i < nombre_de_sommet; i++) {
-        printf("\n[%d] = [%f]\n", monArbre[i]->sommet, monArbre[i]->temps_execution);
-    }
+
 
 
 
