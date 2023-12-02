@@ -252,10 +252,10 @@ Deg_E *colorisation_Welsh_Powell(Deg_E *graphe,int ordre,G * g) {
                 graphe[t].station = color;
             } else if (adj == 1 && graphe[l].station != 0 ) {
                 graphe[l].station = color;
-                graphe[t].station = color + 1;
+                graphe[t].station = color;
             } else if(adj == 1 && graphe[l].station == 0){
                 graphe[l].station = color+1;
-                graphe[t].station = color;
+                graphe[t].station = color+1;
             } else if(graphe[l].deg==0)tab_color[1][graphe[l].sommet] = 1;
 
             if(graphe[t].station==graphe[l].station)
@@ -265,11 +265,13 @@ Deg_E *colorisation_Welsh_Powell(Deg_E *graphe,int ordre,G * g) {
                 {
                     color=check_color(graphe[t],graphe[l]);
                     graphe[t].station=color+1;
+                    printf("sommet : %d\tdeg : %d\t\tcolor : %d\n",graphe[t].sommet,graphe[t].deg,graphe[t].station);
                 }
             }
-            tab_color[color][graphe[l].sommet] = 1;
+            if(graphe[l].deg!=0)
+                tab_color[color][graphe[l].sommet] = 1;
             t++;
-
+            color=color+1;
         }
         //color=color+1;
     }
@@ -294,8 +296,8 @@ Deg_E *colorisation_Welsh_Powell(Deg_E *graphe,int ordre,G * g) {
         for (int i = 0; i < ordre; ++i) {
             if(graphe[i].deg==0) {
                 graphe[i].station = 1;
-                color=color-1;
-                tab_color[1][graphe[i].sommet] = 1;
+                //color=color-1;
+                tab_color[0][graphe[i].sommet] = 1;
             }
 
             //for (int m = 0; m < graphe->deg; ++m) {
@@ -307,8 +309,8 @@ Deg_E *colorisation_Welsh_Powell(Deg_E *graphe,int ordre,G * g) {
 
         }
         printf("\ncolor : %d\n",color);
-    for (int i = 1; i < color; ++i) {
-        printf("%d\t",i);
+    for (int i = 0; i < color; ++i) {
+        printf("%d\t",i+1);
         for (int j = 0; j < ordre; ++j) {
             printf("%d ",tab_color[i][j]);
         }
@@ -335,9 +337,10 @@ int check_color(Deg_E pt1,Deg_E pt2)
 {
     int color=0;
     if(pt1.station==pt2.station)
-        color=pt2.station+1;
+        color=pt2.station-1;
     else if(pt1.station!=pt2.station)
-        color=pt2.station;
+        color=pt1.station;
+    printf("jhfdjchsfdcjh%d\n",color);
     return color;
 }
 //////////////////////////////////////////////////////////////////////
