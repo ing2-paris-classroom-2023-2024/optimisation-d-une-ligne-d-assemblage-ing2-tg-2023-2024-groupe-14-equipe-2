@@ -26,7 +26,9 @@ void print_G_exclu(G * graphe);//print du graphe avec les succs de chaque sE
 //////////////////////////////////////////////////////
 ///             fonctions colorisation             ///
 //////////////////////////////////////////////////////
-
+Deg_E *colorisation_Welsh_Powell(Deg_E *graphe,int order,G *g);
+int adjacence(Deg_E pt1,Deg_E pt2);
+int check_color(Deg_E pt1,Deg_E pt2);
 
 //////////////////////////////////////////////////////
 ///         fonctions tris + organisation          ///
@@ -34,10 +36,8 @@ void print_G_exclu(G * graphe);//print du graphe avec les succs de chaque sE
 Deg_E *tri_sommet_par_deg(Deg_E *pt,int order);
 Deg_E *tri_sommet_croissants(Deg_E *pt,int order);
 
-int check_correspondance_station(int t1,int t2,Deg_E *pt);
-
-
-
+int check_correspondance_station(int t1,int t2,Deg_E *pt);//check si les sommets sont dans la même station
+                                                          //retourne 1 si oui, 0 si non
 
 
 #endif //OPTIMISATION_D_UNE_LIGNE_D_ASSEMBLAGE_ING2_TG_2023_2024_GROUPE_14_EQUIPE_2_EXCUSION_H

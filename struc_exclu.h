@@ -17,17 +17,6 @@ typedef struct deg_ex{
     int deg;
     int *tab;
 }Deg_E;
-/* Structure d'un arc*/
-struct Arc_ex
-{
-    int sommet; // numéro de sommet d'un arc adjacent au sommet initial
-    int valeur;
-    Deg_E s_info;
-    struct Arc_ex* arc_suivant;
-};
-
-/* Alias de pointeur sur un Arc */
-typedef struct Arc_ex* pArcE;
 
 /* Structure d'un sommet*/
 typedef struct Sommet_ex
@@ -41,12 +30,18 @@ typedef struct Sommet_ex
 /* Alias de pointeur sur un Sommet */
 typedef S_Exclu* pSE;
 
+typedef struct Station{
+    int num;
+    int *tab;
+}station;
+
 /* Alias d'un Graphe */
 
 typedef struct G_exclu2{
     int taille,
-    ordre;
-    int **mat;
+    ordre,deg_max;
+    //int **mat;
+    int **tab_station;
     Deg_E *tab;
 
 }G;
