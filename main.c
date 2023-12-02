@@ -108,13 +108,6 @@ int main() {
         rewind(fichier_2);
     }
 
-   /* for (int i = 0; i < nombre_de_sommet; i++) {
-        printf("\nMon sommet [%d] : ", monArbre[i]->sommet);
-        for (int j = 0; j < monArbre[i]->nb_successeur; j++) {
-            printf(" [%d] ", monArbre[i]->successeur[j]);
-        }
-    }*/
-
     optimisation_de_la_chaine(monArbre, nb_precedence_arbre, nombre_de_sommet, cycle);
 
     return 0;

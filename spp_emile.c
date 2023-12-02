@@ -60,8 +60,10 @@ void optimisation_de_la_chaine(arbre* monArbre[], int taille, int ordre, float c
     float potentiel_temps_list =0;
     int nb_predecesseur = 0;
     arbre* sommet_analyse = NULL;
+    QueueElement_G *temp_G = NULL;
+    QueueElement *temp = NULL;
 
-    try_a_bulle(monArbre, ordre, taille);
+            try_a_bulle(monArbre, ordre, taille);
     for (int i = 0; i < ordre; i++) {
         if(monArbre[i]->nb_predecesseur == 0){
             nb_sommet_initiale++;
@@ -92,7 +94,7 @@ void optimisation_de_la_chaine(arbre* monArbre[], int taille, int ordre, float c
         }
     }
 
-    sommet_analyse = monArbre[0];
+    sommet_analyse = monArbre[12 ];
 
     ///Vrai algorithme d'optimisation qui commence
 
@@ -107,7 +109,7 @@ void optimisation_de_la_chaine(arbre* monArbre[], int taille, int ordre, float c
             if(collorisation()){
 
                 potentiel_sommet = sommet_analyse->predecesseur[i];
-                printf("\n\nle potentiel sommet [%d]\n", potentiel_sommet);
+
 
                 //on viens convertir le potentielle sommet en donné utilisable pour le mettre des les crochet d'un tableau
                 for (int j = 0; j < ordre; j++) { // enfaite on va venir comparer le nom du sommet avec sa position dans l'arbre et on lui attribue cette position par la suite
@@ -118,7 +120,7 @@ void optimisation_de_la_chaine(arbre* monArbre[], int taille, int ordre, float c
                 }
 
                 potentiel_temps_list = temps_list + monArbre[potentiel_sommet]->temps_execution;
-                printf("\nle potentiel temp de list [%f]\n", potentiel_temps_list);
+
 
                 if(potentiel_temps_list <= cycle){
                     push_queue(*monArbre[potentiel_sommet]);
@@ -129,103 +131,107 @@ void optimisation_de_la_chaine(arbre* monArbre[], int taille, int ordre, float c
                 else{
                     printf("\nLe cycle a ete sature\n\n");
                     print_queue();
+                    print_queue_G();
                     exit(EXIT_SUCCESS);
                 }
             }
         }
+        printf("\n");
         print_queue_G();
         printf("\n");
 
         /// on analyse les sommet qui sommet qui sont dans list à l'interrieur de la liste generale, l'analyse de chaque chemin
+        for (int m = 0; m < 3; m++) {
 
-        QueueElement_G *temp_G = first_G;
 
-        for (int i = 0; i < nb_element_G; i++) { //boucle qui va servir a nous deplacer sur notre list general de first_G à last_G
-            if(i != 0){  //il ne faut pas sauter le premier point de la list general
-                temp_G = temp_G->next;
-            }
-            QueueElement *temp = temp_G->last; // permet d'aller chercher le derneière element de la list
+            temp_G = first_G;
 
-            *sommet_analyse = temp->value; // permet de selectionner le sommet d'analyse, qui est de type arbre, mais on a egalement a l'interreieur de queue element un type abre
+            for (int i = 0; i < nb_element_G; i++) { //boucle qui va servir a nous deplacer sur notre list general de first_G à last_G
+                if (i != 0) {  //il ne faut pas sauter le premier point de la list general
+                    temp_G = temp_G->next;
+                }
+                temp = temp_G->last; // permet d'aller chercher le derneière element de la list
 
-            if(sommet_analyse->nb_predecesseur > 0){
-                for (int j = 0; j < sommet_analyse->nb_predecesseur; j++) { // on va venir analyser tous les predecesseur du sommet_analyse
-                    if(j == 0 && collorisation()) { // le première element peut directement etre palacé en dernière de notre liste initialement creer
+                *sommet_analyse = temp->value; // permet de selectionner le sommet d'analyse, qui est de type arbre, mais on a egalement a l'interreieur de queue element un type abre
+
+                if (sommet_analyse->nb_predecesseur > 0) {
+                    for (int j = 0; j < sommet_analyse->nb_predecesseur; j++) { // on va venir analyser tous les predecesseur du sommet_analyse
+                        if (j == 0 && collorisation()) { // le première element peut directement etre palacé en dernière de notre liste initialement creer
 
                             //ici on viens en quelque sorte reproduire notre schéma un peu plus haut avec l'histoire de devoir convertir nos sommet etc...
                             // mais on a une difference, pour cette partie on viens push directement dans la file a l'interrieur de notre files general
                             potentiel_sommet = sommet_analyse->predecesseur[j];
 
                             for (int k = 0; k < ordre; k++) {
-                                if(monArbre[k]->sommet == potentiel_sommet){
+                                if (monArbre[k]->sommet == potentiel_sommet) {
                                     potentiel_sommet = k;
                                     break;
                                 }
                             }
                             potentiel_temps_list = temp_G->temp_list + monArbre[potentiel_sommet]->temps_execution;
 
-                            if(potentiel_temps_list <= cycle){
+                            if (potentiel_temps_list <= cycle) {
                                 push_queue_I(*monArbre[potentiel_sommet], temp_G, potentiel_temps_list);
-                            }
-                            else{
+                            } else {
                                 printf("pour la file avec comme boucle d indentaion [%d] on a un cycle saturer", j);
                                 print_queue_G();
                                 exit(EXIT_SUCCESS);
                             }
 
-                    }
-                    else if (collorisation()){                                                         // mais pour les autre element on va devoir creer d'autre liste tous en reprenant notre list initiale et les aujouter a notre liste generale
-                        QueueElement *temp_cc = temp_G->first;    //temp_cc sera utiliser pour copier et coller la liste dans une nouvelle liste pour venir la palcer a la fin
-                        int valeur_arret = 0; //okay alors moi je vois ça comme un detour ce qui va ce passer avec la boucle for et le while
-                        while (temp_cc != temp){ // je vais venir compter une valeur d'arret pour savoir quand est ce que je dois m'arreter sur ma list a copier
-                            valeur_arret++;
-                            temp_cc = temp_cc->next;
-                        }
-                        valeur_arret++; // ici je remet un ++ car le while s'arret avent d'avoir atteind la vrai fin du copier coller
-                        float temps_intermediaire = 0;
-                        temp_cc = temp_G->first; //on remet le temp_cc a jour
+                        } else if (collorisation()) {                                                         // mais pour les autre element on va devoir creer d'autre liste tous en reprenant notre list initiale et les aujouter a notre liste generale
+                            QueueElement *temp_cc = temp_G->first;    //temp_cc sera utiliser pour copier et coller la liste dans une nouvelle liste pour venir la palcer a la fin
+                            int valeur_arret = 0; //okay alors moi je vois ça comme un detour ce qui va ce passer avec la boucle for et le while
+                            while (temp_cc != temp) { // je vais venir compter une valeur d'arret pour savoir quand est ce que je dois m'arreter sur ma list a copier
+                                valeur_arret++;
+                                temp_cc = temp_cc->next;
+                            }
+                            valeur_arret++; // ici je remet un ++ car le while s'arret avent d'avoir atteind la vrai fin du copier coller
+                            float temps_intermediaire = 0;
+                            temp_cc = temp_G->first; //on remet le temp_cc a jour
 
-                        for (int k = 0; k < valeur_arret; k++) { // et ici je copie colle la list
-                            push_queue(temp_cc->value);                                              // on push nos different element dans une list en preparation list_p
-                            temps_intermediaire = temps_intermediaire + temp_cc->value.temps_execution; // pour povoir récupéré le temps de notre list
-                            temp_cc = temp_cc->next;
-                        }
+                            for (int k = 0; k < valeur_arret; k++) { // et ici je copie colle la list
+                                push_queue(temp_cc->value);                                              // on push nos different element dans une list en preparation list_p
+                                temps_intermediaire = temps_intermediaire + temp_cc->value.temps_execution; // pour povoir récupéré le temps de notre list
+                                temp_cc = temp_cc->next;
+                            }
 
 
-                        //push_queue_G(temps_intermediaire);                                       // et la c'est bon on a copier notre list dans la list generale
-                        //print_queue_G();
-                       // exit(EXIT_SUCCESS);          // on reprend le shema pour insérer des sommet dans notre list a l'interrieur de la list generale
-                        potentiel_sommet = sommet_analyse->predecesseur[j];
+                            // et la c'est bon on a copier notre list dans la list generale
+                            // on reprend le shema pour insérer des sommet dans notre list a l'interrieur de la list generale
+                            potentiel_sommet = sommet_analyse->predecesseur[j];
 
-                        //printf("le sommet analyse : [%d]", sommet_analyse->sommet);
-                        //exit(EXIT_SUCCESS);
-                        for (int k = 0; k < ordre; k++) {
-                            if (monArbre[k]->sommet == potentiel_sommet) {
-                                potentiel_sommet = k;
-                                break;
+                            //printf("le sommet analyse : [%d]", sommet_analyse->sommet);
+                            //exit(EXIT_SUCCESS);
+                            for (int k = 0; k < ordre; k++) {
+                                if (monArbre[k]->sommet == potentiel_sommet) {
+                                    potentiel_sommet = k;
+                                    break;
+                                }
+                            }
+                            potentiel_temps_list = temps_intermediaire + monArbre[potentiel_sommet]->temps_execution;
+
+                            if (potentiel_temps_list <= cycle) {
+                                push_queue(*monArbre[potentiel_sommet]);
+                            } else {
+                                printf("pour la file avec comme boucle d indentaion [%d] on a un cycle saturer", j);
+                                print_queue_G();
+                                exit(EXIT_SUCCESS);
                             }
                         }
-                        potentiel_temps_list = temps_intermediaire + monArbre[potentiel_sommet]->temps_execution;
-
-                        if(potentiel_temps_list <= cycle){
-                            push_queue(*monArbre[potentiel_sommet]);
-                        }else{
-                            printf("pour la file avec comme boucle d indentaion [%d] on a un cycle saturer", j);
-                            print_queue_G();
-                            exit(EXIT_SUCCESS);
-                        }
                     }
+                } else {
+                    printf("\nOn a atteind le sommet initiale\n");
+                    print_queue_G();
+                    exit(EXIT_SUCCESS);
                 }
             }
-            else{
-                printf("\nOn a atteind le sommet initiale\n");
-                print_queue_G();
-                exit(EXIT_SUCCESS);
-            }
+            push_queue_G(potentiel_temps_list);
+            printf("\nLa premiere partie du code a ete faite \n");
+            print_queue_G();
+            //free(temp_G);
         }
-        push_queue_G(potentiel_temps_list);
-        printf("\nLa premiere partie du code a ete faite \n");
-        print_queue_G();
+
+
     }
     else{
         printf("\n Le sommet d'origine est pris comme point de depart\n");
