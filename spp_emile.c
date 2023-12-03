@@ -55,7 +55,8 @@ void ouverture_de_fichier(arbre* tab_sommet[], int nombre_de_ligne, FILE* fichie
 void optimisation_de_la_chaine(arbre* monArbre[], int taille, int ordre, float cycle){
 
     int nb_sommet_initiale = 0;
-    int push_queue_O_N = 0;
+    QueueElement_G *temp_controle;
+    int nb_saturation = 0;
     float temps_list = 0;
     int garde_fou = 0;
     int potentiel_sommet = 0;
@@ -95,7 +96,7 @@ void optimisation_de_la_chaine(arbre* monArbre[], int taille, int ordre, float c
         }
     }
 
-    sommet_analyse = monArbre[0];
+    sommet_analyse = monArbre[26];
 
     ///algorithme d'optimisation qui commence
 
@@ -140,30 +141,39 @@ void optimisation_de_la_chaine(arbre* monArbre[], int taille, int ordre, float c
         printf("\n");
 
         /// on analyse les sommet qui sommet qui sont dans list à l'interrieur de la liste generale, l'analyse de chaque chemin
-        for (int m = 0; m < 2; m++) {
-            garde_fou = 0;
+        while(garde_fou != 1) {
+
             temp_G = first_G; // pour chaque tour de boucle il faut réanalysé chaque point de la liste ne partant du début
+            temp_controle = first_G;
 
             for (int i = 0; i < nb_element_G; i++) { //boucle qui va servir a nous deplacer sur notre list general de first_G à last_G
+                garde_fou = 0;
 
-                if (i != 0 || temp_G->sommet_initiale == 1) {  //Permet de pouvoir analyser tout les element de la list generale
+                for (int j = 0; j < nb_element_G; j++) {
+                    if(temp_controle->sommet_initiale == 1){
+                        nb_saturation++;
+                    }
+                }
+                if(nb_saturation == nb_element_G){
+                    printf("\ngarde fou active\n");
+                    garde_fou = 1;
+                    break;
+                }else{
+                    nb_saturation = 0;
+                }
+
+
+                if (i != 0 || temp_G->sommet_initiale == 1) {  //Permet de pouvoir analyser tout les element de la list generale sans pour autant analyser les element deja saturer
                     do{
                         if (temp_G == last_G) {// si on atteind le bord de la liste il faut reboucler sur first_G
                             temp_G = first_G;
                         } else {
                             temp_G = temp_G->next;
                         }
-                        garde_fou++;
-                        if(garde_fou >= nb_element_G){
-                            break;
-                        }
                     }while(temp_G->sommet_initiale == 1);
                 }
 
-                if(garde_fou >= nb_element_G){
-                    printf("\ngarde fou active\n");
-                    break;
-                }
+
 
 
                 temp = temp_G->last; //permet de pouvoir analyser le dernier sommet de la liste selectionné
@@ -194,9 +204,6 @@ void optimisation_de_la_chaine(arbre* monArbre[], int taille, int ordre, float c
                             }else{
                                 push_queue_I(*monArbre[potentiel_sommet], temp_G, potentiel_temps_list);
                                 temp_G->sommet_initiale = 1;
-
-                                print_queue_G();
-
                             }
                         }else if (collorisation()){                                                         // mais pour les autre element on va devoir creer d'autre liste tous en reprenant notre list initiale et les aujouter a notre liste generale
                             QueueElement *temp_cc = temp_G->first;    //temp_cc sera utiliser pour copier et coller la liste dans une nouvelle liste pour venir la palcer a la fin
@@ -237,25 +244,22 @@ void optimisation_de_la_chaine(arbre* monArbre[], int taille, int ordre, float c
                                 push_queue(*monArbre[potentiel_sommet]);
                                 push_queue_G(potentiel_temps_list);
                                 last_G->sommet_initiale = 1;
-
-                                print_queue_G();
-
                             }
 
                         }
                     }
                 }else{
-                    printf("\nOn a atteind le sommet initiale\n");
                     temp_G->sommet_initiale = 1;
                 }
             }
-            printf("\nLa premiere partie du code a ete faite");
+            printf("\nboucle m\n");
             print_queue_G();
         }
     }
     else{
         printf("\n Le sommet d'origine est pris comme point de depart\n");
     }
+    print_queue_G();
 }
 
 
