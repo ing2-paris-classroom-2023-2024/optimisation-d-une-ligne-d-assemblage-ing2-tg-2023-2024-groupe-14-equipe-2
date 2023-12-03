@@ -419,6 +419,7 @@ G* main_ex(char * filename){
     tri_sommet_croissants(ptE->tab,ptE->ordre);
     print_G_exclu(ptE);
     ptE->tab=tri_par_station(ptE->tab,ptE->ordre);
+    system("cls");
     print_G_exclu(ptE);
     return ptE;
 }

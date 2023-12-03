@@ -18,22 +18,6 @@ typedef struct deg_ex{
     int *tab;
 }Deg_E;
 
-/* Structure d'un sommet*/
-typedef struct Sommet_ex
-{
-    struct Arc_ex* pArcE;
-    int sommet;
-    int station;/// 1, 2, 3, etc.
-
-}S_Exclu;
-
-/* Alias de pointeur sur un Sommet */
-typedef S_Exclu* pSE;
-
-typedef struct Station{
-    int num;
-    int *tab;
-}station;
 
 /* Alias d'un Graphe */
 
@@ -45,9 +29,5 @@ typedef struct G_exclu2{
     Deg_E *tab;
 
 }G;
-
-
-
-
 
 #endif //OPTIMISATION_D_UNE_LIGNE_D_ASSEMBLAGE_ING2_TG_2023_2024_GROUPE_14_EQUIPE_2_STRUC_EXCLU_H
