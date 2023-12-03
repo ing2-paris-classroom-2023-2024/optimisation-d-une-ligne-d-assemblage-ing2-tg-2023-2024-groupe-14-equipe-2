@@ -1,6 +1,7 @@
 #include "point_h_emile.h"
+#include "excusion.h"
 
-void try_a_bulle(arbre* monArbre[], int ordre, int taille){
+void try_a_bulle_nb_successeur(arbre* monArbre[], int ordre){
     arbre* tmp;
 
     for (int i=0 ; i < ordre-1; i++){
@@ -14,45 +15,31 @@ void try_a_bulle(arbre* monArbre[], int ordre, int taille){
     }
 }
 
+void try_a_bulle_temp_des_list(float monArbre[], int ordre){
+    float tmp;
+
+    for (int i=0 ; i < ordre-1; i++){
+        for (int j=0 ; j < ordre-i-1; j++){
+            if (monArbre[j] > monArbre[j+1]){
+                tmp = monArbre[j];
+                monArbre[j] = monArbre[j+1];
+                monArbre[j+1] = tmp;
+            }
+        }
+    }
+}
+
 int collorisation(){
     return  1 ;
 }
 
-
-void ouverture_de_fichier(arbre* tab_sommet[], int nombre_de_ligne, FILE* fichier){
-
-
-    char caractere;
-    int nb_successeur = 0;
-    int nb_predecesseur = 0;
-    int numero_du_sommet =0;
-    int i = 0;
-
-    for (int j = 0; j < nombre_de_ligne; j++) {
-        tab_sommet[j] = (arbre*)malloc(sizeof(arbre));
-        if (tab_sommet[j] == NULL) {
-            printf("Erreur d'allocation de mémoire.\n");
-            exit(EXIT_FAILURE);
-        }
-    }
-
-
-    while (fscanf(fichier, "%d", &numero_du_sommet) == 1) {
-        tab_sommet[i]->sommet = numero_du_sommet;
-        i++;
-    }
-
-    rewind(fichier);
-
-    for (int j = 0; j < nombre_de_ligne; j++) {
-        printf("numero du sommet : %d\n", tab_sommet[i]->sommet);
-    }
-
-}
-
-
-
 void optimisation_de_la_chaine(arbre* monArbre[], int taille, int ordre, float cycle){
+
+    char *file;
+    G* graphe;
+    file="exclusion.txt";
+    graphe=main_ex(file);
+
 
     int nb_sommet_initiale = 0;
     QueueElement_G *temp_controle;
@@ -65,13 +52,13 @@ void optimisation_de_la_chaine(arbre* monArbre[], int taille, int ordre, float c
     QueueElement_G *temp_G = NULL;
     QueueElement *temp = NULL;
 
-            try_a_bulle(monArbre, ordre, taille);
+    try_a_bulle_nb_successeur(monArbre, ordre);
     for (int i = 0; i < ordre; i++) {
         if(monArbre[i]->nb_predecesseur == 0){
             nb_sommet_initiale++;
         }
     }
-    printf("\n nombre de sommet initiale : [%d]", nb_sommet_initiale);
+    printf("\nnombre de sommet initiale : [%d]", nb_sommet_initiale);
     int sommet_initiale[nb_sommet_initiale];
     for (int i = 0; i < nb_sommet_initiale; i++) {
         for (int j = 0; j < ordre; j++) {
@@ -96,7 +83,7 @@ void optimisation_de_la_chaine(arbre* monArbre[], int taille, int ordre, float c
         }
     }
 
-    sommet_analyse = monArbre[26];
+    sommet_analyse = monArbre[27];
 
     ///algorithme d'optimisation qui commence
 
@@ -105,7 +92,7 @@ void optimisation_de_la_chaine(arbre* monArbre[], int taille, int ordre, float c
         for (int i = 0; i < sommet_analyse->nb_predecesseur; i++) {
             temps_list = sommet_analyse->temps_execution;
             push_queue(*sommet_analyse);
-            if(collorisation()){
+            if(check_correspondance_station(sommet_analyse->sommet, sommet_analyse->predecesseur[i], graphe->tab) || true){
 
                 potentiel_sommet = sommet_analyse->predecesseur[i];
 
@@ -134,11 +121,6 @@ void optimisation_de_la_chaine(arbre* monArbre[], int taille, int ordre, float c
                 }
             }
         }
-        printf("\n");
-        print_queue_G();
-
-
-        printf("\n");
 
         /// on analyse les sommet qui sommet qui sont dans list à l'interrieur de la liste generale, l'analyse de chaque chemin
         while(garde_fou != 1) {
@@ -155,7 +137,6 @@ void optimisation_de_la_chaine(arbre* monArbre[], int taille, int ordre, float c
                     }
                 }
                 if(nb_saturation == nb_element_G){
-                    printf("\ngarde fou active\n");
                     garde_fou = 1;
                     break;
                 }else{
@@ -183,7 +164,7 @@ void optimisation_de_la_chaine(arbre* monArbre[], int taille, int ordre, float c
                 if (sommet_analyse->nb_predecesseur != 0) { // condition qui va nous permettre de savoir si on le sommet a analyser est un sommet initiale ou non
 
                     for (int j = 0; j < sommet_analyse->nb_predecesseur; j++) { // on va venir analyser tous les predecesseur du sommet_analyse
-                        if (j == 0 && collorisation()) { // le première element peut directement etre palacé en dernier de notre liste initialement creer
+                        if (j == 0 && (check_correspondance_station(sommet_analyse->sommet, sommet_analyse->predecesseur[j], graphe->tab) || true)) { // le première element peut directement etre palacé en dernier de notre liste initialement creer
 
                             //ici on viens en quelque sorte reproduire notre schéma un peu plus haut avec l'histoire de devoir convertir nos sommet etc...
                             // mais on a une difference, pour cette partie on viens push directement dans la file a l'interrieur de notre files general
@@ -205,7 +186,7 @@ void optimisation_de_la_chaine(arbre* monArbre[], int taille, int ordre, float c
                                 push_queue_I(*monArbre[potentiel_sommet], temp_G, potentiel_temps_list);
                                 temp_G->sommet_initiale = 1;
                             }
-                        }else if (collorisation()){                                                         // mais pour les autre element on va devoir creer d'autre liste tous en reprenant notre list initiale et les aujouter a notre liste generale
+                        }else if (check_correspondance_station(sommet_analyse->sommet, sommet_analyse->predecesseur[j], graphe->tab) || true){                                                         // mais pour les autre element on va devoir creer d'autre liste tous en reprenant notre list initiale et les aujouter a notre liste generale
                             QueueElement *temp_cc = temp_G->first;    //temp_cc sera utiliser pour copier et coller la liste dans une nouvelle liste pour venir la palcer a la fin
                             int valeur_arret = 0;       //okay alors moi je vois ça comme un detour ce qui va ce passer avec la boucle for et le while
 
@@ -252,14 +233,47 @@ void optimisation_de_la_chaine(arbre* monArbre[], int taille, int ordre, float c
                     temp_G->sommet_initiale = 1;
                 }
             }
-            printf("\nboucle m\n");
-            print_queue_G();
         }
     }
     else{
         printf("\n Le sommet d'origine est pris comme point de depart\n");
     }
+
+    //maintenat que le retour en arriere est fait il faut faire les successeur
+    printf("\n");
     print_queue_G();
+    return;
+    // partie en cour de crétion
+    temp_G = first_G;
+    float tableau_des_temps[nb_element_G];
+    for (int i = 0; i < nb_element_G; i++) {
+        tableau_des_temps[i] = temp_G->temp_list;
+        temp_G = temp_G->next;
+    }
+
+    try_a_bulle_temp_des_list(tableau_des_temps, nb_element_G);
+
+    for (int i = 0; i < nb_element_G; i++) {
+        printf("\nliste [%d] : [%f]\n", i, tableau_des_temps[i]);
+    }
+
+    //permet de copier coller une liste avec le temps minimun dans notre liste de station
+    temp_G = first_G;
+    for (int i = 0; i < nb_element_G; i++) {
+        if(temp_G->temp_list == tableau_des_temps[0]){
+            break;
+        }
+        temp_G = temp_G->next;
+    }
+    temp = temp_G->first;
+
+
+
+    if(sommet_analyse->nb_successeur != 0){
+
+    }else{
+
+    }
 }
 
 
@@ -271,6 +285,7 @@ Bool is_empty_queue(void) {
 
     return false;
 }
+
 
 
 void print_queue(void){
@@ -301,32 +316,6 @@ void push_queue(arbre x){
         last_p= element;
     }
     nb_element_p++;
-}
-
-void pop_last(){
-    if(is_empty_queue()){
-        printf("la file est vide, aucun dernier element a retirer\n");
-        return;
-    }
-
-    QueueElement *temp = first_p;
-
-
-    if(first_p == last_p){
-        first_p = NULL;
-        last_p = NULL;
-    }
-    else{
-        while (temp->next != last_p){
-            temp = temp->next;
-        }
-        temp->next = NULL;
-        last_p->next = temp;
-        last_p = temp;
-
-    }
-    free(temp->next);
-    nb_element_p--;
 }
 
 void pop_queue(void){
@@ -458,6 +447,195 @@ void clear_queue_G(void){
 
 void push_queue_I(arbre x, QueueElement_G *repere, float temp_list){ //fonction qui va nous permettre de push à l'interrieur des list de la liste générale
     QueueElement *element;
+    element = malloc(sizeof(*element));
+
+    element->value = x;
+    element->next = NULL;
+
+
+    repere->temp_list = temp_list;
+
+    repere->last->next = element;
+    repere->last = element;
+
+
+
+    repere->nb_element++;
+}
+
+
+
+
+
+// toutes ces fonction sont les meme que au dessus juste elles vont nous permttre de pourvoir faire nos station
+
+
+Bool is_empty_queue_a(void) {
+    if (first_a == NULL && last_a == NULL)
+        return true;
+
+    return false;
+}
+
+void print_queue_a(void){
+    if(is_empty_queue_a()){
+        printf("Rein a afficher, la files est vide\n");
+        return;
+    }
+    printf("\n affichage de la petit list\n");
+    En_avant_toute *temp = first_a;
+    while(temp != NULL){
+        printf(" [[%d]] ", temp->value.sommet);
+        temp = temp->next;
+    }
+}
+
+void push_queue_a(arbre x){
+    En_avant_toute *element;
+    element = malloc(sizeof(*element));
+
+    element->value = x;
+    element->next = NULL;
+
+    if(is_empty_queue()){
+        first_a = element;
+        last_a = element;
+    }else{
+        last_a->next = element;
+        last_a= element;
+    }
+    nb_element_a++;
+}
+
+void pop_queue_a(void){
+    if(is_empty_queue_a()){
+        printf("\nla file est vide, il n'y a rien à retirer\n");
+        return;
+    }
+
+    En_avant_toute *temp = first_a;
+
+    if(first_a == last_a){
+        first_a = NULL;
+        last_a = NULL;
+    }
+    else{
+        first_a = first_a -> next;
+    }
+    free(temp);
+    nb_element_a--;
+}
+
+void clear_queue_a(void){
+    if(is_empty_queue_a()){
+        printf(" \nrien a supprimer, la file est vide\n");
+        return;
+    }
+    while (!is_empty_queue_a()){
+        pop_queue_a();
+    }
+}
+
+
+
+Bool is_empty_queue_AG(void) {
+    if (first_AG == NULL && last_AG == NULL)
+        return true;
+
+    return false;
+}
+
+void print_queue_AG(void){
+    if(is_empty_queue_AG()){
+        printf("Rein a afficher, la files En avant tout AG est vide\n");
+        return;
+    }
+    printf("\nAffichage de la file  En avant tout AG\n");
+    En_avant_toute_G *temp_G = first_AG;
+    while(temp_G != NULL){
+        En_avant_toute *temp = temp_G->first;
+        while (temp != NULL) {
+            printf(" [[%d]] ", temp->value.sommet);
+            temp = temp->next;
+        }
+        printf("  [%f]", temp_G->temp_list);
+        printf("\n");
+        temp_G = temp_G ->next;
+    }
+}
+
+void push_queue_AG(float temp_list){
+    En_avant_toute_G *element;
+    element = malloc(sizeof(*element));
+    if(is_empty_queue_a()){
+        printf("\nFile vide, on ne peut peut pas inserer de nouvelle file dans la file generale\n");
+        return;
+    }
+    element->first = first_a;
+    first_a = NULL;
+    element->last = last_a;
+    last_a = NULL;
+
+    element->next = NULL;
+
+    element->nb_element = nb_element_a;
+    nb_element_a = 0;
+
+    element->temp_list = temp_list;
+
+    if(is_empty_queue_G()){
+        first_AG = element;
+        last_AG = element;
+    }else{
+        last_AG->next = element;
+        last_AG = element;
+    }
+    nb_element_AG++;
+} //En réaliter on n'a pas vraiment d'élément à ajouter, on relie plutot le first et le last de notre list simple a ce de la structure de la list_General
+
+void pop_queue_AG(void){
+    if(is_empty_queue_AG()){
+        printf("\nRien a supprimer, la file En avnt toute est vide\n");
+    }
+
+    En_avant_toute_G *temp_G = first_AG;
+    if( last_AG == first_AG) {
+        first_AG = NULL;
+        last_AG = NULL;
+    }
+    else{
+        while(temp_G->nb_element != 0){
+            En_avant_toute *temp = temp_G->first;
+            if(temp_G->first == temp_G->last){
+                temp_G->first = NULL;
+                temp_G->last = NULL;
+            }
+            else{
+                temp_G->first = temp_G->first -> next;
+            }
+            free(temp);
+            temp_G->nb_element--;
+        }
+        first_AG = first_AG->next;
+    }
+    free(temp_G);
+    nb_element_G--;
+} // si on doit vidé un point de notre list Général il Faut vidé tous les points à l'intérrieur du last et du first de notre list elle meme dans la list général
+
+void clear_queue_AG(void){
+    if(is_empty_queue_AG()){
+        printf(" \nrien a supprimer, la file est vide\n");
+        return;
+    }
+    while (!is_empty_queue_AG()){
+        pop_queue_AG();
+    }
+}
+
+
+
+void push_queue_AI(arbre x, En_avant_toute_G *repere, float temp_list){ //fonction qui va nous permettre de push à l'interrieur des list de la liste générale
+    En_avant_toute *element;
     element = malloc(sizeof(*element));
 
     element->value = x;
