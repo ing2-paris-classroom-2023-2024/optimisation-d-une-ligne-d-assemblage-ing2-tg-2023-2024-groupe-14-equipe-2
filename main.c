@@ -15,8 +15,8 @@ int main() {
     int indentation_predecesseur = 0;
     float cycle = 0;
 
-    fichier = fopen("operation.txt", "r");
-    fichier_2 = fopen("precedence.txt", "r");
+    fichier = fopen("test_operation.txt", "r");
+    fichier_2 = fopen("test_precedence.txt", "r");
     fichier_3 =  fopen("test_cycle.txt", "r");
 
     fscanf(fichier_3, "%f", &cycle);
