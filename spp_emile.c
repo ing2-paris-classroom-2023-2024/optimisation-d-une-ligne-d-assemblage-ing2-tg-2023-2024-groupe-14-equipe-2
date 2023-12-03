@@ -35,7 +35,7 @@ int collorisation(){
 
 void optimisation_de_la_chaine(arbre* monArbre[], int taille, int ordre, float cycle){
 
-    char *file;
+    char *file; // partie constance
     G* graphe;
     file="exclusion.txt";
     graphe=main_ex(file);
@@ -83,7 +83,7 @@ void optimisation_de_la_chaine(arbre* monArbre[], int taille, int ordre, float c
         }
     }
 
-    sommet_analyse = monArbre[27];
+    sommet_analyse = monArbre[0];
 
     ///algorithme d'optimisation qui commence
 
