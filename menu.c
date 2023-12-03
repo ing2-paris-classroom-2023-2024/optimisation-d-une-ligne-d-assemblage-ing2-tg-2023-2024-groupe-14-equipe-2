@@ -72,8 +72,8 @@ void menu(FILE *fichierOper, FILE *fichierPreced, FILE *fichierTpsCycle, char * 
                     retourMenu = mainEm(fichierOper, fichierPreced, fichierTpsCycle);
                     if (!retourMenu) {
                         printf("\nAppuyez sur Entree pour retourner au menu principal...");
-                        getchar();  // Wait for Enter key press
-                        system("cls");  // ANSI escape code to clear the screen
+                        getchar();
+                        system("cls");
                     }
                 }
                 /*rep2 = getchar();
