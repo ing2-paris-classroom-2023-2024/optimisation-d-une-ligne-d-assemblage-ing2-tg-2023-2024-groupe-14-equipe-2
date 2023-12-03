@@ -15,8 +15,6 @@ typedef struct {
     int *successeur;
     int nb_successeur;
     float temps_execution;
-    int ordre;
-    int taille;
 }arbre;
 
 typedef enum{
@@ -30,7 +28,7 @@ typedef struct QueueElement{
 }QueueElement, *Queue;
 
 typedef struct QueueElement_G{
-    int valeur_du_point;
+    int sommet_initiale;
     float temp_list;
     QueueElement *first;
     QueueElement *last;

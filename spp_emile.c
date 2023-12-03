@@ -55,6 +55,7 @@ void ouverture_de_fichier(arbre* tab_sommet[], int nombre_de_ligne, FILE* fichie
 void optimisation_de_la_chaine(arbre* monArbre[], int taille, int ordre, float cycle){
 
     int nb_sommet_initiale = 0;
+    int push_queue_O_N = 0;
     float temps_list = 0;
     int potentiel_sommet = 0;
     float potentiel_temps_list =0;
@@ -94,7 +95,7 @@ void optimisation_de_la_chaine(arbre* monArbre[], int taille, int ordre, float c
         }
     }
 
-    sommet_analyse = monArbre[12 ];
+    sommet_analyse = monArbre[12];
 
     ///Vrai algorithme d'optimisation qui commence
 
@@ -138,29 +139,38 @@ void optimisation_de_la_chaine(arbre* monArbre[], int taille, int ordre, float c
         }
         printf("\n");
         print_queue_G();
+
         printf("\n");
 
         /// on analyse les sommet qui sommet qui sont dans list à l'interrieur de la liste generale, l'analyse de chaque chemin
-        for (int m = 0; m < 3; m++) {
-
-
+        for (int m = 0; m < 2; m++) {
             temp_G = first_G;
 
             for (int i = 0; i < nb_element_G; i++) { //boucle qui va servir a nous deplacer sur notre list general de first_G à last_G
-                if (i != 0) {  //il ne faut pas sauter le premier point de la list general
-                    temp_G = temp_G->next;
+
+                if (i != 0 ) {  //il ne faut pas sauter le premier point de la list general
+                    while (temp_G->sommet_initiale == 1){
+                        temp_G = temp_G->next;
+                        if(temp_G == last_G){
+                            temp_G = first_G;
+                        }
+                    }
                 }
-                temp = temp_G->last; // permet d'aller chercher le derneière element de la list
+
+                temp = temp_G->last;
 
                 *sommet_analyse = temp->value; // permet de selectionner le sommet d'analyse, qui est de type arbre, mais on a egalement a l'interreieur de queue element un type abre
 
+
                 if (sommet_analyse->nb_predecesseur > 0) {
+
                     for (int j = 0; j < sommet_analyse->nb_predecesseur; j++) { // on va venir analyser tous les predecesseur du sommet_analyse
-                        if (j == 0 && collorisation()) { // le première element peut directement etre palacé en dernière de notre liste initialement creer
+                        if (j == 0 && collorisation()) { // le première element peut directement etre palacé en dernier de notre liste initialement creer
 
                             //ici on viens en quelque sorte reproduire notre schéma un peu plus haut avec l'histoire de devoir convertir nos sommet etc...
                             // mais on a une difference, pour cette partie on viens push directement dans la file a l'interrieur de notre files general
                             potentiel_sommet = sommet_analyse->predecesseur[j];
+
 
                             for (int k = 0; k < ordre; k++) {
                                 if (monArbre[k]->sommet == potentiel_sommet) {
@@ -171,16 +181,21 @@ void optimisation_de_la_chaine(arbre* monArbre[], int taille, int ordre, float c
                             potentiel_temps_list = temp_G->temp_list + monArbre[potentiel_sommet]->temps_execution;
 
                             if (potentiel_temps_list <= cycle) {
-                                push_queue_I(*monArbre[potentiel_sommet], temp_G, potentiel_temps_list);
-                            } else {
+                                push_queue_I(*monArbre[potentiel_sommet], temp_G, potentiel_temps_list); //confirmation que cette fonction marche bien
+                                if(monArbre[potentiel_sommet]->nb_predecesseur == 0){
+                                    temp_G->sommet_initiale = 1;
+                                }else{
+                                    temp_G->sommet_initiale = 0;
+                                }
+                            }else {
                                 printf("pour la file avec comme boucle d indentaion [%d] on a un cycle saturer", j);
                                 print_queue_G();
                                 exit(EXIT_SUCCESS);
                             }
-
                         } else if (collorisation()) {                                                         // mais pour les autre element on va devoir creer d'autre liste tous en reprenant notre list initiale et les aujouter a notre liste generale
                             QueueElement *temp_cc = temp_G->first;    //temp_cc sera utiliser pour copier et coller la liste dans une nouvelle liste pour venir la palcer a la fin
-                            int valeur_arret = 0; //okay alors moi je vois ça comme un detour ce qui va ce passer avec la boucle for et le while
+                            int valeur_arret = 0;       //okay alors moi je vois ça comme un detour ce qui va ce passer avec la boucle for et le while
+
                             while (temp_cc != temp) { // je vais venir compter une valeur d'arret pour savoir quand est ce que je dois m'arreter sur ma list a copier
                                 valeur_arret++;
                                 temp_cc = temp_cc->next;
@@ -195,19 +210,17 @@ void optimisation_de_la_chaine(arbre* monArbre[], int taille, int ordre, float c
                                 temp_cc = temp_cc->next;
                             }
 
-
                             // et la c'est bon on a copier notre list dans la list generale
                             // on reprend le shema pour insérer des sommet dans notre list a l'interrieur de la list generale
                             potentiel_sommet = sommet_analyse->predecesseur[j];
 
-                            //printf("le sommet analyse : [%d]", sommet_analyse->sommet);
-                            //exit(EXIT_SUCCESS);
                             for (int k = 0; k < ordre; k++) {
                                 if (monArbre[k]->sommet == potentiel_sommet) {
                                     potentiel_sommet = k;
                                     break;
                                 }
                             }
+
                             potentiel_temps_list = temps_intermediaire + monArbre[potentiel_sommet]->temps_execution;
 
                             if (potentiel_temps_list <= cycle) {
@@ -217,17 +230,29 @@ void optimisation_de_la_chaine(arbre* monArbre[], int taille, int ordre, float c
                                 print_queue_G();
                                 exit(EXIT_SUCCESS);
                             }
+                            push_queue_G(potentiel_temps_list);
+                            /*if (j == 2){
+                                print_queue_G();
+                                printf("%d", nb_element_G);
+                                exit(EXIT_SUCCESS);
+                            }*/
                         }
                     }
-                } else {
+                }else{
                     printf("\nOn a atteind le sommet initiale\n");
                     print_queue_G();
                     exit(EXIT_SUCCESS);
                 }
+                print_queue_G();
+                printf("\n%d\n", temp_G->sommet_initiale);
+                //exit(EXIT_SUCCESS);
             }
-            push_queue_G(potentiel_temps_list);
-            printf("\nLa premiere partie du code a ete faite \n");
+
+            printf("\nLa premiere partie du code a ete faite");
+
             print_queue_G();
+
+            printf("\nla la");
             //free(temp_G);
         }
 
@@ -254,6 +279,7 @@ void print_queue(void){
         printf("Rein a afficher, la files est vide\n");
         return;
     }
+    printf("\n affichage de la petit list\n");
     QueueElement *temp = first_p;
     while(temp != NULL){
         printf(" [[%d]] ", temp->value.sommet);
@@ -438,10 +464,13 @@ void push_queue_I(arbre x, QueueElement_G *repere, float temp_list){ //fonction 
     element->value = x;
     element->next = NULL;
 
+
     repere->temp_list = temp_list;
 
     repere->last->next = element;
     repere->last = element;
+
+
 
     repere->nb_element++;
 }

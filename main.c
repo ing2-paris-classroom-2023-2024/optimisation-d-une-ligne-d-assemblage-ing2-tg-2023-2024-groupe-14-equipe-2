@@ -48,8 +48,6 @@ int main() {
     rewind(fichier);
 
 
-
-
     while ((caractere = fgetc(fichier_2)) != EOF) {
         if (caractere == '\n') {
             nb_precedence_arbre++;
