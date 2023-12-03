@@ -95,7 +95,7 @@ void optimisation_de_la_chaine(arbre* monArbre[], int taille, int ordre, float c
         }
     }
 
-    sommet_analyse = monArbre[12];
+    sommet_analyse = monArbre[0];
 
     ///Vrai algorithme d'optimisation qui commence
 
@@ -149,11 +149,9 @@ void optimisation_de_la_chaine(arbre* monArbre[], int taille, int ordre, float c
             for (int i = 0; i < nb_element_G; i++) { //boucle qui va servir a nous deplacer sur notre list general de first_G à last_G
 
                 if (i != 0 ) {  //il ne faut pas sauter le premier point de la list general
-                    while (temp_G->sommet_initiale == 1){
-                        temp_G = temp_G->next;
-                        if(temp_G == last_G){
-                            temp_G = first_G;
-                        }
+                    temp_G = temp_G->next;
+                    if(temp_G == last_G){
+                        temp_G = first_G;
                     }
                 }
 
@@ -240,8 +238,6 @@ void optimisation_de_la_chaine(arbre* monArbre[], int taille, int ordre, float c
                     }
                 }else{
                     printf("\nOn a atteind le sommet initiale\n");
-                    print_queue_G();
-                    exit(EXIT_SUCCESS);
                 }
                 print_queue_G();
                 printf("\n%d\n", temp_G->sommet_initiale);
