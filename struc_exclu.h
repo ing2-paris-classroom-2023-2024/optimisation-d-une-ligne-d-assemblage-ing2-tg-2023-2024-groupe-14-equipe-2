@@ -39,7 +39,7 @@ typedef struct Station{
 
 typedef struct G_exclu2{
     int taille,
-    ordre,deg_max;
+    ordre,color_max,deg_max;
     //int **mat;
     int **tab_station;
     Deg_E *tab;

@@ -7,7 +7,7 @@
 
 #include "struc_exclu.h"
 
-void main_ex(char * filename);
+G* main_ex(char * filename);
 
 //////////////////////////////////////////////////////
 ///           fonctions lecture fichier            ///
@@ -26,7 +26,7 @@ void print_G_exclu(G * graphe);//print du graphe avec les succs de chaque sE
 //////////////////////////////////////////////////////
 ///             fonctions colorisation             ///
 //////////////////////////////////////////////////////
-Deg_E *colorisation_Welsh_Powell(Deg_E *graphe,int order,G *g);
+G *colorisation_Welsh_Powell(Deg_E *graphe,int order,G *g);
 int adjacence(Deg_E pt1,Deg_E pt2);
 int check_color(Deg_E pt1,Deg_E pt2);
 

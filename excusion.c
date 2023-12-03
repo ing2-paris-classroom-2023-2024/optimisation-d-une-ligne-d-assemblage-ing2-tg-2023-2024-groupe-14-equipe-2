@@ -227,7 +227,7 @@ int check_correspondance_station(int t1,int t2,Deg_E *pt)
     else
         return 0;
 }
-Deg_E *colorisation_Welsh_Powell(Deg_E *graphe,int ordre,G * g) {
+G *colorisation_Welsh_Powell(Deg_E *graphe,int ordre,G * g) {
     int color = 1;
     int adj;
     int t=0;
@@ -242,70 +242,53 @@ Deg_E *colorisation_Welsh_Powell(Deg_E *graphe,int ordre,G * g) {
     }printf("\n");
     //g->tab_station[color].num = 0;
     for (int l = 0; l < ordre; ++l) {
-        graphe[l].station = 0;
+        g->tab[l].station = 0;
 
 
         while (t<l){
-            adj = adjacence(graphe[l], graphe[t]);
-            if (adj == 0 && graphe[l].station == 0 ) {
-                graphe[l].station = color;
-                graphe[t].station = color;
-            } else if (adj == 1 && graphe[l].station != 0 ) {
-                graphe[l].station = color;
-                graphe[t].station = color;
-            } else if(adj == 1 && graphe[l].station == 0){
-                graphe[l].station = color+1;
-                graphe[t].station = color+1;
-            } else if(graphe[l].deg==0)tab_color[1][graphe[l].sommet] = 1;
-
-            if(graphe[t].station==graphe[l].station)
+            adj = adjacence(g->tab[l], g->tab[t]);
+            if (adj == 0 && g->tab[l].station == 0 ) {
+                g->tab[l].station = color;
+                g->tab[t].station = color;
+            } else if (adj == 1 && g->tab[l].station != 0 ) {
+                g->tab[l].station = color;
+                g->tab[t].station = color+1;
+            } else if(adj == 1 && g->tab[l].station == 0){
+                g->tab[l].station = color;
+                g->tab[t].station = color;
+            } else if(g->tab[l].deg==0)tab_color[1][g->tab[l].sommet] = 1;
+    printf("\nCouleur : %d %d \n",g->tab[0].station,g->tab[1].station);
+            if(g->tab[t].station==g->tab[l].station)
             {
-                adj= adjacence(graphe[t],graphe[l]);
-                if(adj==0 && graphe[t].station==graphe[l].station)
+                adj= adjacence(g->tab[t],g->tab[l]);
+                if(adj==0 && g->tab[t].station==g->tab[l].station)
                 {
-                    color=check_color(graphe[t],graphe[l]);
-                    graphe[t].station=color+1;
-                    printf("sommet : %d\tdeg : %d\t\tcolor : %d\n",graphe[t].sommet,graphe[t].deg,graphe[t].station);
+                    color=check_color(g->tab[t],g->tab[l]);
+                    g->tab[t].station=color+1;
+                    printf("sommet : %d\tdeg : %d\t\tcolor : %d\n",g->tab[t].sommet,g->tab[t].deg,g->tab[t].station);
                 }
             }
-            if(graphe[l].deg!=0)
-                tab_color[color][graphe[l].sommet] = 1;
+            if(g->tab[l].deg!=0)
+                tab_color[color][g->tab[l].sommet] = 1;
             t++;
             color=color+1;
         }
         //color=color+1;
     }
-        /*for (int l = 0; l < ordre; ++l) {
-            while (k < graphe[i].deg) {
-                if (graphe[i].station == 0) {
-                    graphe[i].station = color;
-                    j = i + 1;
-                    printf("sommet : %d\tdeg : %d\t\tcolor : %d\n",graphe[i].sommet,graphe[i].deg,graphe[i].station);
-                    while (j < graphe[i].deg) {
-                        if (graphe[j].station == 0 &&
-                            check_correspondance_station(graphe->tab[i], graphe->tab[j], graphe) == 0) {
-                            graphe[j].station = color;
-                        }
-                        j++;
-                    }
-                    color++;
-                }
-                i++;
-            }
-        }*/graphe[0].station = 1;
+    g->tab[0].station = 1;
         for (int i = 0; i < ordre; ++i) {
-            if(graphe[i].deg==0) {
-                graphe[i].station = 1;
+            if(g->tab[i].deg==0) {
+                g->tab[i].station = 1;
                 //color=color-1;
-                tab_color[0][graphe[i].sommet] = 1;
+                tab_color[0][g->tab[i].sommet] = 1;
             }
 
             //for (int m = 0; m < graphe->deg; ++m) {
-            printf("sommet : %d\tdeg : %d\t\t", graphe[i].sommet, graphe[i].deg);
-            for (int j = 0; j < graphe[i].deg; ++j) {
-                printf("%d \t", graphe[i].tab[j]);
+            printf("sommet : %d\tdeg : %d\t\t", g->tab[i].sommet, g->tab[i].deg);
+            for (int j = 0; j < g->tab[i].deg; ++j) {
+                printf("%d \t", g->tab[i].tab[j]);
             }
-            printf("color : %d\n", graphe[i].station);
+            printf("color : %d\n", g->tab[i].station);
 
         }
         printf("\ncolor : %d\n",color);
@@ -316,7 +299,59 @@ Deg_E *colorisation_Welsh_Powell(Deg_E *graphe,int ordre,G * g) {
         }
         printf("\n");
     }
-        return graphe;
+    int color_max=color;
+    system("cls");
+    printf("\n\nhfshgdsf\n");
+    //reorganisation des sommets par station avec consideration des connexions
+    for (int i = 0; i < ordre; ++i) {
+        for (int j = 0; j < ordre; ++j) {
+            if(j!=i){
+                if(adjacence(g->tab[i],g->tab[j])==1 && g->tab[i].station==g->tab[j].station) {
+                    color = check_color(g->tab[i], g->tab[j]);
+                    if (g->tab[i].station == 1)
+                        color = color+1;
+                    else if (g->tab[i].station == 2)
+                        color = color+1;
+                    else if (g->tab[i].station == 3)
+                        color = color-2;
+                    g->tab[i].station = color+1;
+                }
+                    //printf("sommet : %d\tdeg : %d\t\tcolor : %d\n",graphe[j].sommet,graphe[j].deg,graphe[j].station);
+
+            }
+        }
+    }
+    for (int i = 0; i < ordre; ++i) {
+        if(g->tab[i].deg>0) {
+            for (int j = 0; j < color_max; ++j) {
+                tab_color[j][g->tab[i].sommet] = 0;
+            }
+            //graphe[i].station = 1;
+            //color=color-1;
+            tab_color[g->tab[i].station-1][g->tab[i].sommet] = 1;
+        }
+
+        //for (int m = 0; m < graphe->deg; ++m) {
+        printf("sommet : %d\tdeg : %d\t\t", g->tab[i].sommet, g->tab[i].deg);
+        for (int j = 0; j < g->tab[i].deg; ++j) {
+            printf("%d \t", g->tab[i].tab[j]);
+        }
+        printf("color : %d\n", g->tab[i].station);
+
+    }
+    //color=3;
+    printf("\ncolor : %d\n",color_max);
+    for (int i = 0; i < color_max; ++i) {
+        printf("%d\t",i+1);
+        for (int j = 0; j < ordre; ++j) {
+            printf("%d ",tab_color[i][j]);
+        }
+        printf("\n");
+    }
+
+
+
+        return g;
 
 }
 int adjacence(Deg_E pt1,Deg_E pt2)
@@ -328,7 +363,7 @@ int adjacence(Deg_E pt1,Deg_E pt2)
             if(pt1.sommet==pt2.tab[j] || pt2.sommet==pt1.tab[j])
                 adj=1;
         }
-        printf("adj : %d\n",adj);
+        //printf("adj : %d\n",adj);
     }
     return adj;
 }
@@ -340,13 +375,13 @@ int check_color(Deg_E pt1,Deg_E pt2)
         color=pt2.station-1;
     else if(pt1.station!=pt2.station)
         color=pt1.station;
-    printf("jhfdjchsfdcjh%d\n",color);
+    //printf("jhfdjchsfdcjh%d\n",color);
     return color;
 }
 //////////////////////////////////////////////////////////////////////
 //////////////////////////MAIN OF EXCLUDE/////////////////////////////
 //////////////////////////////////////////////////////////////////////
-void main_ex(char * filename){
+G* main_ex(char * filename){
     fflush(stdin);//libere memoire
     G *ptE;
     ptE = lect_graphe_exclu(filename);
@@ -358,6 +393,7 @@ void main_ex(char * filename){
     //ajout des fonctions de colorisations
     //print_G_exclu(ptE);
     system("cls");
-    ptE->tab=colorisation_Welsh_Powell(ptE->tab,ptE->ordre,ptE);
+    ptE=colorisation_Welsh_Powell(ptE->tab,ptE->ordre,ptE);
+    print_G_exclu(ptE);
 }
 
