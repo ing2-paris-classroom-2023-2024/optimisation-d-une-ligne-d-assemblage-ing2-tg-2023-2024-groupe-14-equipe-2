@@ -1,6 +1,11 @@
 #include <stdio.h>
+#include "struc_exclu.h"
+#include "excusion.h"
 
-int main() {
-    printf("Hello, World!\n");
-    return 0;
+void main() {
+    char *file;
+    G* graphe;
+    file="Exclusion";
+    graphe=main_ex(file);
+    while(1){}
 }
