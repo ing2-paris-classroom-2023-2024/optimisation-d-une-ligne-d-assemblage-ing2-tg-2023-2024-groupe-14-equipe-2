@@ -460,7 +460,7 @@ void push_queue_I(arbre x, QueueElement_G *repere, float temp_list){ //fonction 
     repere->nb_element++;
 }
 
-int mainEm(FILE *fichier, FILE *fichier_2, FILE *fichier_3) {
+int mainEm(FILE *fichierOper, FILE *fichierPreced, FILE *fichierTpsCycle) {
     char caractere;
     int numero_du_sommet = 0;
     int nombre_de_sommet = 1; // il y a forcement 1 sommet à la base
@@ -472,14 +472,14 @@ int mainEm(FILE *fichier, FILE *fichier_2, FILE *fichier_3) {
     int indentation_predecesseur = 0;
     float cycle = 0;
 
-    fscanf(fichier_3, "%f", &cycle);
+    fscanf(fichierTpsCycle, "%f", &cycle);
 
-    while ((caractere = fgetc(fichier)) != EOF) {
+    while ((caractere = fgetc(fichierOper)) != EOF) {
         if (caractere == '\n') {
             nombre_de_sommet++;
         }
     }
-    rewind(fichier);
+    rewind(fichierOper);
     printf("\nordre du graphe : [%d]\n\n", nombre_de_sommet);
 
     arbre* monArbre[nombre_de_sommet];
@@ -493,21 +493,21 @@ int mainEm(FILE *fichier, FILE *fichier_2, FILE *fichier_3) {
     }
 
     for (int j = 0; j < nombre_de_sommet; j++) {
-        fscanf(fichier, "%d%f", &numero_du_sommet, &temps);
+        fscanf(fichierOper, "%d%f", &numero_du_sommet, &temps);
         monArbre[j]->sommet = numero_du_sommet;
         monArbre[j]->temps_execution = temps;
     }
 
-    rewind(fichier);
+    rewind(fichierOper);
 
 
-    while ((caractere = fgetc(fichier_2)) != EOF) {
+    while ((caractere = fgetc(fichierPreced)) != EOF) {
         if (caractere == '\n') {
             nb_precedence_arbre++;
         }
     }
     printf("\ntaille du graphe : [%d]\n\n", nb_precedence_arbre);
-    rewind(fichier_2);
+    rewind(fichierPreced);
     for (int i = 0; i < nombre_de_sommet; i++ ) {
         monArbre[i]->nb_predecesseur = 0;
         monArbre[i]->nb_successeur = 0;
@@ -515,7 +515,7 @@ int mainEm(FILE *fichier, FILE *fichier_2, FILE *fichier_3) {
 
     for (int i = 0; i < nombre_de_sommet; i++) {
         for (int j = 0; j <= nb_precedence_arbre; j++) {
-            fscanf(fichier_2, "%d%d", &sommet_1, &sommet_2);
+            fscanf(fichierPreced, "%d%d", &sommet_1, &sommet_2);
             //printf("\n [%d]  [%d]\n",monArbre[i]->sommet, sommet_1);
             if(monArbre[i]->sommet == sommet_1){
                 monArbre[i]->nb_successeur++;
@@ -525,7 +525,7 @@ int mainEm(FILE *fichier, FILE *fichier_2, FILE *fichier_3) {
                 monArbre[i]->nb_predecesseur++;
             }
         }
-        rewind(fichier_2);
+        rewind(fichierPreced);
     }
 /*
     for (int i = 0; i < nombre_de_sommet; i++) {
@@ -538,12 +538,12 @@ int mainEm(FILE *fichier, FILE *fichier_2, FILE *fichier_3) {
         monArbre[i]->predecesseur = (int*)malloc(sizeof(int)*monArbre[i]->nb_predecesseur);
     }
 
-    rewind(fichier_2);
+    rewind(fichierPreced);
 
 
     for (int i = 0; i < nombre_de_sommet; i++) {
         for (int j = 0; j <= nb_precedence_arbre; j++) {
-            fscanf(fichier_2, "%d%d", &sommet_1, &sommet_2);
+            fscanf(fichierPreced, "%d%d", &sommet_1, &sommet_2);
             //printf("\n [%d]  [%d]\n",monArbre[i]->sommet, sommet_1);
             if(monArbre[i]->sommet == sommet_1){
                 monArbre[i]->successeur[indentation_successeur] = sommet_2;
@@ -556,7 +556,7 @@ int mainEm(FILE *fichier, FILE *fichier_2, FILE *fichier_3) {
         }
         indentation_successeur = 0;
         indentation_predecesseur = 0;
-        rewind(fichier_2);
+        rewind(fichierPreced);
     }
 
     optimisation_de_la_chaine(monArbre, nb_precedence_arbre, nombre_de_sommet, cycle);

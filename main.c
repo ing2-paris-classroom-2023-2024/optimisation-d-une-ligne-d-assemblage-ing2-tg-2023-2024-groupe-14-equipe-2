@@ -1,13 +1,17 @@
 #include "SSP.h"
 
 int main() {
-    FILE *fichier;
-    FILE *fichier_2;
-    FILE *fichier_3;
-    fichier = fopen("operations.txt", "r");
-    fichier_2 = fopen("precedences.txt", "r");
-    fichier_3 =  fopen("temps_cycle.txt", "r");
-    mainEm(fichier,fichier_2,fichier_3);
+    FILE *fichierOper;
+    FILE *fichierPreced;
+    FILE *fichierTpsCycle;
+    char* fileExclu;
+    G* grapheExclu;
+    fichierOper = fopen("operations.txt", "r");
+    fichierPreced = fopen("precedences.txt", "r");
+    fichierTpsCycle =  fopen("temps_cycle.txt", "r");
+    fileExclu="exclusions.txt";
+    menu(fichierOper, fichierPreced, fichierTpsCycle, fileExclu);
+    return 0;
 
 /*    char *fileExclu;
      G* grapheExclu;
@@ -15,5 +19,5 @@ int main() {
      fileExclu="exclusion.txt";
      grapheExclu=main_ex(fileExclu);
      menu(fileExclu);
-     return 0;*/
+     */
 }

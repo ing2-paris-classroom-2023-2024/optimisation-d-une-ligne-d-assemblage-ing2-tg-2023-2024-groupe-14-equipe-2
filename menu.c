@@ -29,7 +29,7 @@ void resetCouleur () {
     printf("\033[0m");
 }
 
-void menu(char * exclu/*           , char * prec, char * oper, char * tpsCycle*/) {
+void menu(FILE *fichierOper, FILE *fichierPreced, FILE *fichierTpsCycle, char * exclu) {
     int fin;
     fin = 0;
     while(!fin) {
@@ -67,12 +67,16 @@ void menu(char * exclu/*           , char * prec, char * oper, char * tpsCycle*/
             case '3':
                 system("cls");
                 resetCouleur();
-                printf("\t\t\t************************************\n");
-                printf("\t\t\t** \033[1;36mBOUGER JOUEUR\033[0m | \033[1;36mTUILES\033[0m | \033[1;36mRETOUR\033[0m**\n"
-                       "\t\t\t**              \033[1;36m(1-3)\033[0m             **\n");
-                printf("\t\t\t************************************\n");
-                resetCouleur();
-                rep2 = getchar();
+                int retourMenu = 0;
+                while (!retourMenu) {
+                    retourMenu = mainEm(fichierOper, fichierPreced, fichierTpsCycle);
+                    if (!retourMenu) {
+                        printf("\nAppuyez sur Entree pour retourner au menu principal...");
+                        getchar();  // Wait for Enter key press
+                        system("cls");  // ANSI escape code to clear the screen
+                    }
+                }
+                /*rep2 = getchar();
                 switch (rep2) {
                     case '1':
                         system("cls");
@@ -85,7 +89,7 @@ void menu(char * exclu/*           , char * prec, char * oper, char * tpsCycle*/
                     default :
                         printf("reesayez");
                         break;
-                }
+                }*/
 
                 break;
 
