@@ -81,7 +81,7 @@ void ouverture_de_fichier(arbre* tab_sommet[], int nombre_de_ligne, FILE* fichie
 void optimisation_de_la_chaine(arbre* monArbre[], int taille, int ordre, float cycle);
 //**********************************************************************
 
-
+int mainEm(FILE *fichier, FILE *fichier_2, FILE *fichier_3);
 
 void menu();
 
