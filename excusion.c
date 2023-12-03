@@ -158,8 +158,8 @@ void print_successif(Deg_E pt)//pSE * sE, int num)
 }
 void print_G_exclu(G * pt)//affiche les informations de chaques sommets
 {
-
-    pt->tab= tri_sommet_croissants(pt->tab,pt->ordre);
+    //Deg_E *temporary;
+    //pt->tab= tri_sommet_croissants(pt->tab,pt->ordre);
     printf("Affichage du graphe d'exclusion :\n");
     //printf("ordre = %d\n",pt->ordre);
     printf("listes d'adjacence :\n\n");
@@ -378,6 +378,28 @@ int check_color(Deg_E pt1,Deg_E pt2)
     //printf("jhfdjchsfdcjh%d\n",color);
     return color;
 }
+Deg_E *tri_par_station(Deg_E *pt,int order){
+    Deg_E temporary;
+    for (int i = 0; i < BUFF_TRI; ++i) {
+        for (int k = 0; k < BUFF_TRI; ++k) {
+            for (int j = 1; j < order; ++j) {
+                if(pt[j-1].station>pt[j].station && j<=order-1){
+                    temporary=pt[j-1];
+                    pt[j-1]=pt[j];
+                    pt[j]=temporary;
+                }
+            }
+        }
+
+        printf("\n");
+        for (int j = 0; j < order; ++j) {
+            printf("sommet : %d\t station : %d\n",pt[j].sommet,pt[j].station);
+        }
+    }
+    //system("cls");
+    printf("\ntri par station fini\n\n");
+    return pt;
+}
 //////////////////////////////////////////////////////////////////////
 //////////////////////////MAIN OF EXCLUDE/////////////////////////////
 //////////////////////////////////////////////////////////////////////
@@ -394,6 +416,10 @@ G* main_ex(char * filename){
     //print_G_exclu(ptE);
     system("cls");
     ptE=colorisation_Welsh_Powell(ptE->tab,ptE->ordre,ptE);
+    tri_sommet_croissants(ptE->tab,ptE->ordre);
     print_G_exclu(ptE);
+    ptE->tab=tri_par_station(ptE->tab,ptE->ordre);
+    print_G_exclu(ptE);
+    return ptE;
 }
 

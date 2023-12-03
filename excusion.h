@@ -35,6 +35,7 @@ int check_color(Deg_E pt1,Deg_E pt2);
 //////////////////////////////////////////////////////
 Deg_E *tri_sommet_par_deg(Deg_E *pt,int order);
 Deg_E *tri_sommet_croissants(Deg_E *pt,int order);
+Deg_E *tri_par_station(Deg_E *pt,int order);
 
 int check_correspondance_station(int t1,int t2,Deg_E *pt);//check si les sommets sont dans la même station
                                                           //retourne 1 si oui, 0 si non
