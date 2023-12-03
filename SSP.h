@@ -51,14 +51,6 @@ int check_correspondance_station(int t1,int t2,Deg_E *pt);//check si les sommets
 
 
 //**********************************************************************
-static QueueElement *first_p = NULL;
-static QueueElement *last_p = NULL;
-static int nb_element_p = 0;
-
-static QueueElement_G *first_G = NULL;
-static QueueElement_G *last_G = NULL;
-static int nb_element_G = 0;
-
 //list classique
 void clear_queue(void);
 void pop_queue(void);
@@ -81,8 +73,8 @@ void ouverture_de_fichier(arbre* tab_sommet[], int nombre_de_ligne, FILE* fichie
 void optimisation_de_la_chaine(arbre* monArbre[], int taille, int ordre, float cycle);
 //**********************************************************************
 
-int mainEm(FILE *fichierOper, FILE *fichierPreced, FILE *fichierTpsCycle);
+int mainEm();
 
-void menu(FILE *fichierOper, FILE *fichierPreced, FILE *fichierTpsCycle, char * exclu);
+void menu(char * exclu);
 
 #endif //OPTIMISATIONLIGNE_ING2G14E2_FINAL_SSP_H

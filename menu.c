@@ -29,7 +29,7 @@ void resetCouleur () {
     printf("\033[0m");
 }
 
-void menu(FILE *fichierOper, FILE *fichierPreced, FILE *fichierTpsCycle, char * exclu) {
+void menu(char * exclu) {
     int fin;
     fin = 0;
     while(!fin) {
@@ -44,7 +44,7 @@ void menu(FILE *fichierOper, FILE *fichierPreced, FILE *fichierTpsCycle, char * 
         resetCouleur();
         printf("\t\t\t*********************************************\n");
         printf("\t\t\t\tENTREZ VOTRE CHOIX\n\n\n");
-        printf("\t\t\t\t1-\033[1;36mSEULEMENT EXCLUSION\033[0m\n");
+        printf("\t\t\t\t1-\033[1;36mSEULEMENT TRI SOMMET\033[0m\n");
         printf("\t\t\t\t2-\033[1;36mSEULEMENT PRECEDENCE\033[0m\n");
         printf("\t\t\t\t3-\033[1;36mTOUTES FONCTIONS REUNIES\033[0m\n");
         printf("\t\t\t*********************************************\n\n\n");
@@ -61,36 +61,20 @@ void menu(FILE *fichierOper, FILE *fichierPreced, FILE *fichierTpsCycle, char * 
             case '1':
                 system("cls");
                 resetCouleur();
+                G* retourMenu1;
                 main_ex(exclu);
-                Sleep(9000);
+                printf("\nAppuyez sur Entree pour retourner au menu principal...");
+                getchar();
+                system("cls");
                 break;
+
             case '3':
                 system("cls");
                 resetCouleur();
-                int retourMenu = 0;
-                while (!retourMenu) {
-                    retourMenu = mainEm(fichierOper, fichierPreced, fichierTpsCycle);
-                    if (!retourMenu) {
-                        printf("\nAppuyez sur Entree pour retourner au menu principal...");
-                        getchar();
-                        system("cls");
-                    }
-                }
-                /*rep2 = getchar();
-                switch (rep2) {
-                    case '1':
-                        system("cls");
-
-                        break;
-                    case '2':
-                        system("cls");
-
-                        break;
-                    default :
-                        printf("reesayez");
-                        break;
-                }*/
-
+                mainEm();
+                printf("\nAppuyez sur Entree pour retourner au menu principal...");
+                getchar();
+                system("cls");
                 break;
 
         }
