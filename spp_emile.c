@@ -94,7 +94,7 @@ void optimisation_de_la_chaine(arbre* monArbre[], int taille, int ordre, float c
         }
     }
 
-    sommet_analyse = monArbre[0];
+    sommet_analyse = monArbre[1];
 
     ///algorithme d'optimisation qui commence
 
@@ -104,7 +104,6 @@ void optimisation_de_la_chaine(arbre* monArbre[], int taille, int ordre, float c
 
     if(sommet_analyse->nb_predecesseur > 0 ){
         ///première phase de l'algorithme on viens créer les base de la list general pour pouvoir par la suite traiter chaque list
-
         for (int i = 0; i < sommet_analyse->nb_predecesseur; i++) {
             temps_list = sommet_analyse->temps_execution;
             push_queue(*sommet_analyse);
@@ -128,8 +127,6 @@ void optimisation_de_la_chaine(arbre* monArbre[], int taille, int ordre, float c
                 if(potentiel_temps_list <= cycle){
                     push_queue(*monArbre[potentiel_sommet]);
                     push_queue_G(potentiel_temps_list);
-                    temps_list = potentiel_temps_list;
-
                 }
                 else{
                     printf("\nLe cycle a ete sature\n\n");
@@ -142,10 +139,11 @@ void optimisation_de_la_chaine(arbre* monArbre[], int taille, int ordre, float c
         printf("\n");
         print_queue_G();
 
+
         printf("\n");
 
         /// on analyse les sommet qui sommet qui sont dans list à l'interrieur de la liste generale, l'analyse de chaque chemin
-        for (int m = 0; m < 3; m++) {
+        for (int m = 0; m < 1; m++) {
             temp_G = first_G; // pour chaque tour de boucle il faut réanalysé chaque point de la liste ne partant du début
 
             for (int i = 0; i < nb_element_G; i++) { //boucle qui va servir a nous deplacer sur notre list general de first_G à last_G
@@ -158,7 +156,6 @@ void optimisation_de_la_chaine(arbre* monArbre[], int taille, int ordre, float c
                 }
 
                 temp = temp_G->last; //permet de pouvoir analyser le dernier sommet de la liste selectionné
-
 
                 *sommet_analyse = temp->value; // permet de selectionner le sommet d'analyse
 
@@ -181,19 +178,15 @@ void optimisation_de_la_chaine(arbre* monArbre[], int taille, int ordre, float c
 
                             if (potentiel_temps_list <= cycle) {
                                 push_queue_I(*monArbre[potentiel_sommet], temp_G, potentiel_temps_list); //confirmation que cette fonction marche bien
-
-                                if(monArbre[potentiel_sommet]->nb_predecesseur == 0){ //permet de savoir si une des list a attiend un sommetr d'origine
-                                    temp_G->sommet_initiale = 1;                        // si il n'y a pas de predecesseur c'est qu'on a un sommmet initiale
-                                }else{
-                                    temp_G->sommet_initiale = 0;
-                                }
-
-                            }else {
-                                printf("pour la file avec comme boucle d indentaion [%d] on a un cycle saturer", j);
+                            }else{
+                                push_queue_I(*monArbre[potentiel_sommet], temp_G, potentiel_temps_list);
+                                temp_G->sommet_initiale = 1;
+                                printf("\npour la file avec comme boucle d indentaion [%d] on a un cycle saturer\n", j);
                                 print_queue_G();
                                 exit(EXIT_SUCCESS);
+
                             }
-                        } else if (collorisation()) {                                                         // mais pour les autre element on va devoir creer d'autre liste tous en reprenant notre list initiale et les aujouter a notre liste generale
+                        }else if (collorisation()) {                                                         // mais pour les autre element on va devoir creer d'autre liste tous en reprenant notre list initiale et les aujouter a notre liste generale
                             QueueElement *temp_cc = temp_G->first;    //temp_cc sera utiliser pour copier et coller la liste dans une nouvelle liste pour venir la palcer a la fin
                             int valeur_arret = 0;       //okay alors moi je vois ça comme un detour ce qui va ce passer avec la boucle for et le while
 
@@ -226,16 +219,20 @@ void optimisation_de_la_chaine(arbre* monArbre[], int taille, int ordre, float c
 
                             if (potentiel_temps_list <= cycle) {
                                 push_queue(*monArbre[potentiel_sommet]);
-                            } else {
-                                printf("pour la file avec comme boucle d indentaion [%d] on a un cycle saturer", j);
+                                push_queue_G(potentiel_temps_list);
+                            }else{
+                                push_queue(*monArbre[potentiel_sommet]);
+                                push_queue_G(potentiel_temps_list);
+                                temp_G->sommet_initiale = 1;
+
+                                printf("\npour la file avec comme boucle hrgfhghyfhgghf d indentaion [%d] on a un cycle saturer\n", j);
                                 print_queue_G();
-                                exit(EXIT_SUCCESS);
                             }
-                            push_queue_G(potentiel_temps_list);
                         }
                     }
                 }else{
                     printf("\nOn a atteind le sommet initiale\n");
+                    temp_G->sommet_initiale = 1;
                 }
             }
             printf("\nLa premiere partie du code a ete faite");
