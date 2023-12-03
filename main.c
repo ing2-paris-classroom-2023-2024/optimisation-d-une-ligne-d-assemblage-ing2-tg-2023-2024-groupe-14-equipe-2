@@ -1,5 +1,7 @@
 #include "SSP.h"
 
+/*PROJET REALISE PAR EMILE.G CONSTANCE.S DAVID.S CHARINA.L*/
+
 int main() {
     char* fileExclu;
     G* grapheExclu;
