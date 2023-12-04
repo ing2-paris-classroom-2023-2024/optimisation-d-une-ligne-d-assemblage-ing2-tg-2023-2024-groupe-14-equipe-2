@@ -40,7 +40,7 @@ void optimisation_de_la_chaine(arbre* monArbre[], int taille, int ordre, float c
 
     char *file; // partie constance
     G* graphe;
-    file="exclusion.txt";
+    file="exclusions.txt";
     graphe=main_ex(file);
 
 
